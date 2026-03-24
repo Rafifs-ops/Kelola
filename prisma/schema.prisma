@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String       @id @default(uuid())
+  email            String       @unique
+  name             String?
+  password         String?
+  image            String?
+  is_premium       Boolean      @default(false)
+  premium_expiry   DateTime?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  transactions     Transaction[]
+  categories       Category[]
+  budgets          Budget[]
+  debts            Debt[]
+  portfolios       Portfolio[]
+}
+
+model Category {
+  id           String        @id @default(uuid())
+  userId       String?       // null for default system categories
+  name         String
+  type         String        // 'INCOME' or 'EXPENSE'
+  icon         String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  user         User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+  budgets      Budget[]
+}
+
+model Debt {
+  id               String        @id @default(uuid())
+  userId           String
+  title            String
+  total_amount     Float
+  remaining_amount Float
+  dueDate          DateTime?
+  status           String        @default("UNPAID") // 'UNPAID', 'PAID'
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions     Transaction[] // Payments towards this debt
+}
+
+model Transaction {
+  id           String    @id @default(uuid())
+  userId       String
+  categoryId   String?
+  debtId       String?
+  type         String    // 'INCOME' or 'EXPENSE'
+  amount       Float
+  date         DateTime
+  description  String?
+  priority     String?   // 'WAJIB', 'PENTING', 'TIDAK PENTING'
+  receiptUrl   String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category     Category? @relation(fields: [categoryId], references: [id])
+  debt         Debt?     @relation(fields: [debtId], references: [id], onDelete: SetNull)
+}
+
+model Budget {
+  id           String    @id @default(uuid())
+  userId       String
+  categoryId   String
+  monthlyLimit Float
+  monthYear    String    // format 'YYYY-MM'
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category     Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, categoryId, monthYear])
+}
+
+model Portfolio {
+  id        String   @id @default(uuid())
+  userId    String
+  type      String   // 'CRYPTO' or 'STOCK'
+  symbol    String   // 'bitcoin', 'ethereum', 'BBCA', 'GOTO'
+  amount    Float    // number of coins or lots (1 lot = 100 shares for stocks)
+  buyPrice  Float    // average buy price in IDR
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

@@ -1,0 +1,98 @@
+<template>
+  <div class="px-6 py-8 md:p-12 pb-32 max-w-2xl mx-auto">
+    <div class="mb-8">
+      <NuxtLink to="/debts" class="text-kelola-sea text-sm font-bold flex items-center gap-2 mb-4 hover:opacity-80">
+        &larr; Kembali ke Daftar Hutang
+      </NuxtLink>
+      <h1 class="text-4xl font-extrabold text-kelola-teal tracking-tighter">Bayar Hutang</h1>
+      <p class="text-kelola-sea mt-1 font-semibold text-sm">Catat pelunasan / cicilan untuk mengurangi sisa hutang secara otomatis.</p>
+    </div>
+
+    <!-- Error/Loading state -->
+    <div v-if="pending" class="text-center py-10 opacity-50">Memuat detail hutang...</div>
+    <div v-else-if="error" class="bg-red-50 text-red-500 font-bold p-4 rounded-xl text-center">Data hutang tidak ditemukan.</div>
+
+    <div v-else-if="debt" class="bg-white rounded-[2.5rem] p-8 shadow-xl border border-gray-50">
+      
+      <div class="bg-gray-50 p-6 rounded-2xl mb-8 border border-gray-100">
+        <h2 class="font-bold text-kelola-teal mb-1">{{ debt.title }}</h2>
+        <div class="flex justify-between mt-4">
+          <div>
+            <p class="text-[10px] font-black tracking-widest text-gray-400 uppercase">Sisa Hutang</p>
+            <p class="font-extrabold text-kelola-sea text-xl">Rp {{ debt.remaining_amount.toLocaleString('id-ID') }}</p>
+          </div>
+          <div class="text-right">
+            <p class="text-[10px] font-black tracking-widest text-gray-400 uppercase">Total Hutang</p>
+            <p class="font-bold text-gray-800">Rp {{ debt.total_amount.toLocaleString('id-ID') }}</p>
+          </div>
+        </div>
+      </div>
+
+      <form @submit.prevent="submitPayment" class="space-y-5">
+        <div>
+          <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Nominal Cicilan (Rp)</label>
+          <div class="relative">
+            <span class="absolute left-5 top-4 font-bold text-kelola-teal">Rp</span>
+            <input v-model="amount" type="number" required :max="debt.remaining_amount" class="w-full bg-white border-2 border-gray-100 rounded-2xl py-4 pl-12 pr-5 text-kelola-teal font-extrabold text-xl focus:outline-none focus:border-kelola-teal transition-all shadow-inner"/>
+          </div>
+          <p class="text-[10px] text-gray-400 mt-2 ml-2 italic">Minimal Rp 1, maksimal sesuai sisa hutang.</p>
+        </div>
+
+        <button type="submit" :disabled="loading || !amount || amount <= 0" class="w-full mt-6 bg-kelola-teal text-kelola-yellow py-4 rounded-2xl font-black text-lg uppercase tracking-widest shadow-[0_10px_30px_rgba(0,84,95,0.3)] hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 border-b-4 border-kelola-teal/50 hover:border-kelola-teal">
+          {{ loading ? 'MEMPROSES...' : 'CATA PELUNASAN' }}
+        </button>
+      </form>
+
+    </div>
+  </div>
+</template>
+
+<script setup>
+const route = useRoute()
+const router = useRouter()
+const debtId = route.params.id
+
+// Re-using debt listing API to get the specific debt. (Filtering client side for simplicity here)
+const { data: debts, pending, error } = useFetch('/api/debts', { headers: useRequestHeaders(['cookie']) })
+
+const debt = computed(() => {
+  return debts.value?.find(d => d.id === debtId)
+})
+
+const amount = ref(null)
+const loading = ref(false)
+
+const submitPayment = async () => {
+  if (amount.value > debt.value.remaining_amount) {
+    alert("Nominal pembayaran melebihi sisa hutang!")
+    return
+  }
+
+  loading.value = true
+  try {
+    // We create an expense transaction linked to this debt
+    // The backend in /api/transactions/index.ts automatically decrements debt.remaining_amount!
+    // But since the user wants a dedicated API or robust feature, let's call transaction API
+    await $fetch('/api/transactions', {
+      method: 'POST',
+      headers: useRequestHeaders(['cookie']),
+      body: {
+        type: 'EXPENSE',
+        amount: parseFloat(amount.value),
+        categoryId: null, // No category, purely debt payment
+        debtId: debt.value.id,
+        date: new Date().toISOString(),
+        description: `Cicilan untuk: ${debt.value.title}`
+      }
+    })
+    alert('Hutang berhasil dibayar!')
+    router.push('/debts')
+  } catch(e) {
+    alert('Terjadi kesalahan saat mencatat pembayaran.')
+  } finally {
+    loading.value = false
+  }
+}
+
+useSeoMeta({ title: 'Bayar Hutang - Kelola' })
+</script
