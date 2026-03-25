@@ -11,11 +11,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        'kelola-sea': '#c16fb0',
-        'kelola-beige': '#f7fcf0',
-        'kelola-lightgreen': '#ecffb6',
-        'kelola-pink': '#c16fb0',
-        'kelola-teal': '#00545f'
+        'kelola-teal': '#00545f',
+        'kelola-lime': '#d6fb00',
+        'kelola-pale': '#ecffb6',
+        'kelola-dark': '#003d46', // Slightly darker teal for depth
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],

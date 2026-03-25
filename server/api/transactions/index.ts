@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { requireAuth } from '../../utils/auth'
+import { randomUUID } from 'node:crypto'
 
 const prisma = new PrismaClient()
 
@@ -79,6 +80,7 @@ export default defineEventHandler(async (event) => {
 
     const tx = await prisma.transaction.create({
       data: {
+        id: randomUUID(),
         userId,
         categoryId: body.categoryId,
         amount: Number(body.amount),
@@ -87,7 +89,8 @@ export default defineEventHandler(async (event) => {
         description: body.description,
         priority: body.priority,
         debtId: body.debtId || null,
-        receiptUrl: body.receiptUrl || null
+        receiptUrl: body.receiptUrl || null,
+        updatedAt: new Date()
       }
     })
     return tx

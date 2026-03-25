@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { requireAuth } from '../../utils/auth'
+import { randomUUID } from 'node:crypto'
 
 const prisma = new PrismaClient()
 
@@ -24,12 +25,14 @@ export default defineEventHandler(async (event) => {
     
     return await prisma.debt.create({
       data: {
+        id: randomUUID(),
         userId,
         title,
         total_amount: Number(total_amount),
         remaining_amount: Number(total_amount),
         dueDate: dueDate ? new Date(dueDate) : null,
-        status: 'UNPAID'
+        status: 'UNPAID',
+        updatedAt: new Date()
       }
     })
   }

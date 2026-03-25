@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { requireAuth } from '../../utils/auth'
+import { randomUUID } from 'node:crypto'
 
 const prisma = new PrismaClient()
 
@@ -17,11 +18,13 @@ export default defineEventHandler(async (event) => {
     const { type, symbol, name, quantity, buy_price } = await readBody(event)
     return prisma.portfolio.create({
       data: {
+        id: randomUUID(),
         userId: session.user.id,
         type, // 'CRYPTO' | 'STOCK'
         symbol,
         amount: parseFloat(quantity),
-        buyPrice: buy_price ? parseFloat(buy_price) : 0
+        buyPrice: buy_price ? parseFloat(buy_price) : 0,
+        updatedAt: new Date()
       }
     })
   }

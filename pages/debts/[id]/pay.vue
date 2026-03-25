@@ -1,25 +1,28 @@
 <template>
   <div class="px-6 py-8 md:p-12 pb-32 max-w-2xl mx-auto">
     <div class="mb-8">
-      <NuxtLink to="/debts" class="text-kelola-sea text-sm font-bold flex items-center gap-2 mb-4 hover:opacity-80">
+      <NuxtLink to="/debts"
+        class="text-kelola-lime text-sm font-bold flex items-center gap-2 mb-4 hover:opacity-80 transition-opacity">
         &larr; Kembali ke Daftar Hutang
       </NuxtLink>
       <h1 class="text-4xl font-extrabold text-kelola-teal tracking-tighter">Bayar Hutang</h1>
-      <p class="text-kelola-sea mt-1 font-semibold text-sm">Catat pelunasan / cicilan untuk mengurangi sisa hutang secara otomatis.</p>
+      <p class="mt-1 font-semibold text-sm">Catat pelunasan / cicilan untuk mengurangi sisa hutang secara otomatis.</p>
     </div>
 
     <!-- Error/Loading state -->
     <div v-if="pending" class="text-center py-10 opacity-50">Memuat detail hutang...</div>
-    <div v-else-if="error" class="bg-red-50 text-red-500 font-bold p-4 rounded-xl text-center">Data hutang tidak ditemukan.</div>
+    <div v-else-if="error" class="bg-red-50 text-red-500 font-bold p-4 rounded-xl text-center">Data hutang tidak
+      ditemukan.</div>
 
-    <div v-else-if="debt" class="bg-white rounded-[2.5rem] p-8 shadow-xl border border-gray-50">
-      
-      <div class="bg-gray-50 p-6 rounded-2xl mb-8 border border-gray-100">
+    <div v-else-if="debt" class="bg-white/80 backdrop-blur-md rounded-[2.5rem] p-8 shadow-xl border border-white/20">
+
+      <div class="bg-kelola-teal/5 p-6 rounded-2xl mb-8 border border-gray-100/30">
         <h2 class="font-bold text-kelola-teal mb-1">{{ debt.title }}</h2>
         <div class="flex justify-between mt-4">
           <div>
             <p class="text-[10px] font-black tracking-widest text-gray-400 uppercase">Sisa Hutang</p>
-            <p class="font-extrabold text-kelola-sea text-xl">Rp {{ debt.remaining_amount.toLocaleString('id-ID') }}</p>
+            <p class="font-extrabold text-kelola-lime text-xl">Rp {{ debt.remaining_amount.toLocaleString('id-ID') }}
+            </p>
           </div>
           <div class="text-right">
             <p class="text-[10px] font-black tracking-widest text-gray-400 uppercase">Total Hutang</p>
@@ -30,15 +33,18 @@
 
       <form @submit.prevent="submitPayment" class="space-y-5">
         <div>
-          <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Nominal Cicilan (Rp)</label>
+          <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Nominal Cicilan
+            (Rp)</label>
           <div class="relative">
             <span class="absolute left-5 top-4 font-bold text-kelola-teal">Rp</span>
-            <input v-model="amount" type="number" required :max="debt.remaining_amount" class="w-full bg-white border-2 border-gray-100 rounded-2xl py-4 pl-12 pr-5 text-kelola-teal font-extrabold text-xl focus:outline-none focus:border-kelola-teal transition-all shadow-inner"/>
+            <input v-model="amount" type="number" required :max="debt.remaining_amount"
+              class="w-full bg-white/50 border-2 border-transparent rounded-2xl py-4 pl-12 pr-5 text-kelola-teal font-extrabold text-xl focus:outline-none focus:border-kelola-lime transition-all shadow-inner" />
           </div>
           <p class="text-[10px] text-gray-400 mt-2 ml-2 italic">Minimal Rp 1, maksimal sesuai sisa hutang.</p>
         </div>
 
-        <button type="submit" :disabled="loading || !amount || amount <= 0" class="w-full mt-6 bg-kelola-teal text-kelola-yellow py-4 rounded-2xl font-black text-lg uppercase tracking-widest shadow-[0_10px_30px_rgba(0,84,95,0.3)] hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 border-b-4 border-kelola-teal/50 hover:border-kelola-teal">
+        <button type="submit" :disabled="loading || !amount || amount <= 0"
+          class="w-full mt-6 bg-gradient-to-r from-kelola-lime to-kelola-pale text-kelola-teal py-4 rounded-2xl font-black text-lg uppercase tracking-widest shadow-[0_10px_30px_rgba(214,251,0,0.3)] hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 border-b-4 border-white/20">
           {{ loading ? 'MEMPROSES...' : 'CATA PELUNASAN' }}
         </button>
       </form>
@@ -87,7 +93,7 @@ const submitPayment = async () => {
     })
     alert('Hutang berhasil dibayar!')
     router.push('/debts')
-  } catch(e) {
+  } catch (e) {
     alert('Terjadi kesalahan saat mencatat pembayaran.')
   } finally {
     loading.value = false
@@ -95,4 +101,4 @@ const submitPayment = async () => {
 }
 
 useSeoMeta({ title: 'Bayar Hutang - Kelola' })
-</script
+</script>

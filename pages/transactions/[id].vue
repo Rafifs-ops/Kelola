@@ -1,29 +1,29 @@
 <template>
   <div class="px-6 py-8 md:p-12 pb-32 max-w-2xl mx-auto">
     <div class="mb-8">
-      <NuxtLink to="/transactions" class="text-kelola-sea text-sm font-bold flex items-center gap-2 mb-4 hover:opacity-80">
+      <NuxtLink to="/transactions" class="text-kelola-lime text-sm font-bold flex items-center gap-2 mb-4 hover:opacity-80 transition-opacity">
         &larr; Kembali
       </NuxtLink>
       <h1 class="text-4xl font-extrabold text-kelola-teal tracking-tighter">Detail Transaksi</h1>
-      <p class="text-kelola-sea mt-1 font-semibold text-sm">Review detail riwayat pengeluaran atau pendapatan.</p>
+      <p class="text-kelola-lime mt-1 font-semibold text-sm">Review detail riwayat pengeluaran atau pendapatan.</p>
     </div>
 
     <!-- Error/Loading state -->
     <div v-if="pending" class="text-center py-10 opacity-50">Memuat detail...</div>
     <div v-else-if="error" class="bg-red-50 text-red-500 font-bold p-4 rounded-xl text-center">{{ error.message }}</div>
 
-    <div v-else-if="transaction" class="bg-white rounded-[2rem] p-8 shadow-xl border border-gray-50 relative overflow-hidden">
+    <div v-else-if="transaction" class="bg-white/80 backdrop-blur-md rounded-[2rem] p-8 shadow-xl border border-white/20 relative overflow-hidden">
       <!-- Decoration -->
-      <div v-if="transaction.type === 'INCOME'" class="absolute -top-10 -right-10 w-32 h-32 bg-kelola-lightgreen rounded-full blur-[30px] opacity-30"></div>
+      <div v-if="transaction.type === 'INCOME'" class="absolute -top-10 -right-10 w-32 h-32 bg-kelola-lime rounded-full blur-[30px] opacity-30"></div>
       <div v-else class="absolute -top-10 -right-10 w-32 h-32 bg-red-100 rounded-full blur-[30px] opacity-30"></div>
 
       <!-- Core Info -->
       <div class="text-center mb-8 relative z-10">
         <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">{{ new Date(transaction.date).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) }}</p>
-        <h2 class="text-5xl font-black tracking-tighter" :class="transaction.type === 'INCOME' ? 'text-kelola-teal' : 'text-kelola-sea'">
+        <h2 class="text-5xl font-black tracking-tighter" :class="transaction.type === 'INCOME' ? 'text-kelola-teal' : 'text-kelola-lime'">
           {{ transaction.type === 'INCOME' ? '+' : '-' }}Rp {{ transaction.amount.toLocaleString('id-ID') }}
         </h2>
-        <div class="inline-block mt-4 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest" :class="transaction.type === 'INCOME' ? 'bg-kelola-lightgreen/20 text-kelola-teal' : 'bg-red-50 text-red-500'">
+        <div class="inline-block mt-4 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest" :class="transaction.type === 'INCOME' ? 'bg-kelola-lime/20 text-kelola-lime' : 'bg-red-50 text-red-500'">
           {{ transaction.type }}
         </div>
       </div>
@@ -34,7 +34,7 @@
       <div class="space-y-4 relative z-10">
         <div class="flex justify-between items-center">
           <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Kategori</span>
-          <span class="font-bold text-kelola-teal bg-gray-50 px-3 py-1 rounded-lg">{{ transaction.category?.name || 'Tanpa Kategori' }}</span>
+          <span class="font-bold text-kelola-teal bg-kelola-teal/5 px-3 py-1 rounded-lg">{{ transaction.category?.name || 'Tanpa Kategori' }}</span>
         </div>
         
         <div class="flex justify-between items-center" v-if="transaction.priority">

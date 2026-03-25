@@ -4,6 +4,8 @@
 
 @layer base {
   body {
-    @apply bg-kelola-beige text-kelola-teal;
+    @apply min-h-screen text-kelola-teal font-medium;
+    background: linear-gradient(135deg, #ecffb6 0%, #d6fb00 50%, #00545f 100%);
+    background-attachment: fixed;
   }
 }

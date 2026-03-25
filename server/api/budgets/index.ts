@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { requireAuth } from '../../utils/auth'
+import { randomUUID } from 'node:crypto'
 
 const prisma = new PrismaClient()
 
@@ -61,9 +62,17 @@ export default defineEventHandler(async (event) => {
       where: {
         userId_categoryId_monthYear: { userId, categoryId, monthYear: currentMonth }
       },
-      update: { monthlyLimit: Number(monthlyLimit) },
+      update: { 
+        monthlyLimit: Number(monthlyLimit),
+        updatedAt: new Date()
+      },
       create: {
-        userId, categoryId, monthYear: currentMonth, monthlyLimit: Number(monthlyLimit)
+        id: randomUUID(),
+        userId, 
+        categoryId, 
+        monthYear: currentMonth, 
+        monthlyLimit: Number(monthlyLimit),
+        updatedAt: new Date()
       }
     })
     return b

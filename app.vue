@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen w-full font-sans antialiased text-gray-900 bg-kelola-beige overflow-y-auto">
+  <div class="h-screen w-full font-sans antialiased overflow-y-auto">
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>

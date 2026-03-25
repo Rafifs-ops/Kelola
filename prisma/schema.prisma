@@ -7,92 +7,99 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id               String       @id @default(uuid())
-  email            String       @unique
-  name             String?
-  password         String?
-  image            String?
-  is_premium       Boolean      @default(false)
-  premium_expiry   DateTime?
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt
-  transactions     Transaction[]
-  categories       Category[]
-  budgets          Budget[]
-  debts            Debt[]
-  portfolios       Portfolio[]
+model budget {
+  id           String   @id @default(uuid())
+  userId       String
+  categoryId   String
+  monthlyLimit Float
+  monthYear    String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  category     category @relation(fields: [categoryId], references: [id], onDelete: Cascade, map: "Budget_categoryId_fkey")
+  user         user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Budget_userId_fkey")
+
+  @@unique([userId, categoryId, monthYear], map: "Budget_userId_categoryId_monthYear_key")
+  @@index([categoryId], map: "Budget_categoryId_fkey")
 }
 
-model Category {
-  id           String        @id @default(uuid())
-  userId       String?       // null for default system categories
-  name         String
-  type         String        // 'INCOME' or 'EXPENSE'
-  icon         String?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  user         User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  transactions Transaction[]
-  budgets      Budget[]
+model category {
+  id        String   @id @default(uuid())
+  userId    String?
+  name      String
+  type      String
+  icon      String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  budget    budget[]
+  transactions transaction[]
+
+  @@index([userId], map: "Category_userId_fkey")
 }
 
-model Debt {
-  id               String        @id @default(uuid())
+model debt {
+  id               String    @id @default(uuid())
   userId           String
   title            String
   total_amount     Float
   remaining_amount Float
   dueDate          DateTime?
-  status           String        @default("UNPAID") // 'UNPAID', 'PAID'
+  status           String    @default("UNPAID")
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
-  user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  transactions     Transaction[] // Payments towards this debt
+  transactions      transaction[]
+  user             user          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "Debt_userId_fkey")
 }
 
-model Transaction {
-  id           String    @id @default(uuid())
-  userId       String
-  categoryId   String?
-  debtId       String?
-  type         String    // 'INCOME' or 'EXPENSE'
-  amount       Float
-  date         DateTime
-  description  String?
-  priority     String?   // 'WAJIB', 'PENTING', 'TIDAK PENTING'
-  receiptUrl   String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-
-  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  category     Category? @relation(fields: [categoryId], references: [id])
-  debt         Debt?     @relation(fields: [debtId], references: [id], onDelete: SetNull)
-}
-
-model Budget {
-  id           String    @id @default(uuid())
-  userId       String
-  categoryId   String
-  monthlyLimit Float
-  monthYear    String    // format 'YYYY-MM'
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-
-  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  category     Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, categoryId, monthYear])
-}
-
-model Portfolio {
+model portfolio {
   id        String   @id @default(uuid())
   userId    String
-  type      String   // 'CRYPTO' or 'STOCK'
-  symbol    String   // 'bitcoin', 'ethereum', 'BBCA', 'GOTO'
-  amount    Float    // number of coins or lots (1 lot = 100 shares for stocks)
-  buyPrice  Float    // average buy price in IDR
+  type      String
+  symbol    String
+  amount    Float
+  buyPrice  Float
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "Portfolio_userId_fkey")
+}
+
+model transaction {
+  id          String   @id @default(uuid())
+  userId      String
+  categoryId  String?
+  debtId      String?
+  type        String
+  amount      Float
+  date        DateTime
+  description String?
+  priority    String?
+  receiptUrl  String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  category    category? @relation(fields: [categoryId], references: [id])
+  debt        debt?     @relation(fields: [debtId], references: [id])
+  user        user      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([categoryId], map: "Transaction_categoryId_fkey")
+  @@index([debtId], map: "Transaction_debtId_fkey")
+  @@index([userId], map: "Transaction_userId_fkey")
+}
+
+model user {
+  id             String    @id @default(uuid())
+  email          String    @unique(map: "User_email_key")
+  name           String?
+  image          String?
+  is_premium     Boolean   @default(false)
+  premium_expiry DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime    @updatedAt
+  password       String?
+  budget         budget[]
+  transactions   transaction[]
+  debts          debt[]
+  portfolios     portfolio[]
 }

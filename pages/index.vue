@@ -2,23 +2,23 @@
   <div class="space-y-8 animate-fade-in">
     <!-- Header Insight -->
     <header
-      class="bg-kelola-teal text-white p-6 md:p-8 rounded-[2.5rem] shadow-xl border border-white/10 relative overflow-hidden group">
+      class="bg-gradient-to-br from-kelola-teal to-kelola-dark text-white p-6 md:p-8 rounded-[2.5rem] shadow-xl border border-white/10 relative overflow-hidden group">
       <!-- Decorative -->
       <div
-        class="absolute -right-20 -top-20 w-64 h-64 bg-kelola-yellow blur-[80px] opacity-20 group-hover:opacity-30 transition-opacity rounded-full pointer-events-none">
+        class="absolute -right-20 -top-20 w-64 h-64 bg-kelola-lime blur-[80px] opacity-20 group-hover:opacity-30 transition-opacity rounded-full pointer-events-none">
       </div>
       <div
-        class="absolute -left-10 -bottom-10 w-40 h-40 bg-kelola-sea blur-[60px] opacity-40 rounded-full pointer-events-none">
+        class="absolute -left-10 -bottom-10 w-40 h-40 bg-kelola-pale blur-[60px] opacity-40 rounded-full pointer-events-none">
       </div>
 
       <div class="flex items-start justify-between relative z-10">
         <div>
           <h1 class="text-3xl font-extrabold mb-1 tracking-tight text-white drop-shadow-sm">Halo, {{
             session?.user?.name?.split(' ')[0] || 'Bro' }}! 👋</h1>
-          <p class="text-kelola-lightgreen text-sm font-semibold tracking-wide">Ringkasan keuanganmu hari ini.</p>
+          <p class="text-kelola-lime text-sm font-semibold tracking-wide">Ringkasan keuanganmu hari ini.</p>
         </div>
         <div v-if="session?.user?.is_premium"
-          class="bg-kelola-pink text-white text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-widest shadow-[0_0_20px_rgba(193,111,176,0.5)]">
+          class="bg-gradient-to-r from-kelola-lime to-kelola-pale text-kelola-teal text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-widest shadow-[0_0_20px_rgba(214,251,0,0.5)]">
           Pro
         </div>
       </div>
@@ -32,27 +32,27 @@
       <!-- AI Insight Card -->
       <div
         class="mt-8 bg-white/10 p-5 rounded-3xl backdrop-blur-xl border border-white/10 flex gap-4 items-start shadow-inner relative z-10">
-        <div class="bg-kelola-lightgreen text-kelola-teal p-3 rounded-2xl shadow-sm">
+        <div class="bg-gradient-to-br from-kelola-lime to-kelola-pale text-kelola-teal p-3 rounded-2xl shadow-sm">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z">
             </path>
           </svg>
         </div>
         <div class="flex-1">
-          <h3 class="text-kelola-lightgreen font-extrabold text-sm mb-1 uppercase tracking-wider">AI Daily Insight ✨
+          <h3 class="text-kelola-lime font-extrabold text-sm mb-1 uppercase tracking-wider">AI Daily Insight ✨
           </h3>
 
           <!-- Tombol Generate Insight -->
           <div v-if="!hasRequestedInsight && !insight" class="py-2">
             <button @click="getAIInsight"
-              class="bg-kelola-pink text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-transform shadow-[0_0_15px_rgba(193,111,176,0.4)] active:scale-95">
+              class="bg-gradient-to-r from-kelola-lime to-kelola-pale text-kelola-teal px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-transform shadow-[0_0_15px_rgba(214,251,0,0.4)] active:scale-95">
               💡 Beri Saya Insight
             </button>
           </div>
 
           <!-- Konten Insight (Loading atau Hasil) -->
           <div v-else>
-            <p v-if="insightPending" class="text-sm text-white/50 animate-pulse font-medium">Meracik insight personal
+            <p v-if="insightPending" class="text-sm text-white/90 animate-pulse font-bold">Meracik insight personal
               untukmu...</p>
             <p v-else class="text-sm text-white/90 leading-relaxed font-medium animate-fade-in-insight">{{
               insight?.insight || 'Yuk, catat transaksi pertamamu agar AI bisa memberi masukan!' }}</p>
@@ -73,7 +73,7 @@
               </path>
             </svg>
           </div>
-          <span class="font-bold text-gray-400 uppercase tracking-wider text-xs">Saldo Cash (IDR)</span>
+          <span class="font-bold text-gray-600 uppercase tracking-wider text-xs">Saldo Cash (IDR)</span>
         </div>
         <h2 class="text-5xl font-extrabold text-kelola-teal tracking-tighter">Rp {{ formatNumber(dashboard?.fiatBalance
           || 0) }}</h2>
@@ -81,7 +81,7 @@
 
       <!-- Assets (Stocks/Crypto) -->
       <NuxtLink to="/portfolios"
-        class="bg-kelola-lightgreen p-8 rounded-[2.5rem] shadow-sm flex flex-col justify-between relative overflow-hidden hover:shadow-md transition group block">
+        class="bg-gradient-to-br from-kelola-lime to-kelola-pale p-8 rounded-[2.5rem] shadow-sm flex flex-col justify-between relative overflow-hidden hover:shadow-md transition group block">
         <div class="flex items-center gap-3 mb-6 relative z-10">
           <div class="w-12 h-12 rounded-2xl bg-kelola-teal/10 flex items-center justify-center text-kelola-teal">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -89,7 +89,9 @@
               </path>
             </svg>
           </div>
-          <span class="font-bold text-kelola-teal/70 uppercase tracking-wider text-xs">Aset Investasi</span>
+          <span
+            class="font-bold text-kelola-teal uppercase tracking-wider text-xs underline underline-offset-4 decoration-kelola-teal/20">Aset
+            Investasi</span>
         </div>
         <h2
           class="text-5xl font-extrabold text-kelola-teal tracking-tighter relative z-10 group-hover:scale-[1.02] transition-transform origin-left">
@@ -107,7 +109,7 @@
         class="bg-white p-6 rounded-[2.5rem] shadow-sm border border-gray-100 flex flex-col md:flex-row items-center gap-6 hover:shadow-md transition">
         <div class="flex-1 w-full relative">
           <h3 class="text-xl font-extrabold text-kelola-teal tracking-tight mb-4 text-center md:text-left">Distribusi
-            Pengeluaran <span class="text-xs font-black text-kelola-sea opacity-60">Bulan Ini</span></h3>
+            Pengeluaran <span class="text-md font-black opacity-80">Bulan Ini</span></h3>
           <div class="h-44 w-full relative">
             <ClientOnly>
               <Doughnut :data="chartData" :options="chartOptions" />
@@ -130,38 +132,37 @@
 
     <section>
       <div class="flex items-center justify-between mb-6 mt-6">
-        <h3 class="text-2xl font-extrabold text-kelola-lightgreen tracking-tight">Riwayat <span
-            class="text-kelola-sea">Bulan
+        <h3 class="text-2xl font-extrabold tracking-tight">Riwayat <span class="text-kelola-dark/60">Bulan
             Ini</span></h3>
         <NuxtLink to="/transactions"
-          class="text-sm font-bold text-kelola-sea hover:text-kelola-yellow transition px-4 py-2 hover:bg-white rounded-full">
+          class="text-sm font-bold text-kelola-teal hover:text-kelola-lime transition px-4 py-2 hover:bg-white/50 rounded-full">
           Lihat Semua</NuxtLink>
       </div>
       <div class="space-y-4">
         <div v-if="dashboard?.recentTransactions?.length === 0"
           class="text-center py-16 bg-white rounded-[2.5rem] shadow-sm border border-dashed border-gray-200">
-          <p class="text-gray-400 font-bold mb-2">Belum ada transaksi.</p>
-          <NuxtLink to="/transactions/add" class="text-kelola-sea font-bold text-sm hover:underline">Tambah Sekarang
+          <p class="text-gray-600 font-bold mb-2">Belum ada transaksi.</p>
+          <NuxtLink to="/transactions/add" class="text-kelola-lime font-bold text-sm hover:underline">Tambah Sekarang
           </NuxtLink>
         </div>
 
         <NuxtLink :to="`/transactions/${tx.id}`" v-for="tx in dashboard?.recentTransactions" :key="tx.id"
-          class="flex items-center justify-between bg-white p-5 rounded-3xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-transparent hover:border-kelola-sea/10 hover:shadow-md transition cursor-pointer active:scale-[0.98]">
+          class="flex items-center justify-between bg-white/80 backdrop-blur-md p-5 rounded-3xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-transparent hover:border-kelola-lime/20 hover:shadow-md transition cursor-pointer active:scale-[0.98]">
           <div class="flex items-center gap-5">
             <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-inner"
-              :class="tx.type === 'INCOME' ? 'bg-kelola-lightgreen/50' : 'bg-red-50'">
+              :class="tx.type === 'INCOME' ? 'bg-kelola-lime/30' : 'bg-red-50'">
               {{ tx.category?.icon || (tx.type === 'INCOME' ? '💰' : '💸') }}
             </div>
             <div>
               <p class="font-bold text-gray-800 text-lg mb-0.5">{{ tx.category?.name || 'Lainnya' }}</p>
               <div class="flex items-center gap-2">
-                <p class="text-xs text-gray-400 font-semibold">{{ new Date(tx.date).toLocaleDateString('id-ID') }}</p>
+                <p class="text-xs text-gray-600 font-bold">{{ new Date(tx.date).toLocaleDateString('id-ID') }}</p>
               </div>
             </div>
           </div>
           <div class="text-right">
             <p class="font-extrabold text-lg tracking-tight"
-              :class="tx.type === 'INCOME' ? 'text-kelola-sea' : 'text-gray-800'">
+              :class="tx.type === 'INCOME' ? 'text-green-400' : 'text-red-500'">
               {{ tx.type === 'INCOME' ? '+' : '-' }} Rp {{ formatNumber(tx.amount) }}
             </p>
           </div>
@@ -214,7 +215,7 @@ const totalAssetValue = computed(() => {
 // Chart Logic
 const chartLabels = ref([])
 const chartDataRaw = ref([])
-const chartColors = ['#f43f5e', '#f97316', '#eab308', '#84cc16', '#14b8a6', '#6366f1', '#a855f7', '#9ca3af']
+const chartColors = ['#d6fb00', '#ecffb6', '#00545f', '#003d46', '#84cc16', '#a3e635', '#2dd4bf', '#0f766e']
 
 const chartData = computed(() => {
   if (!dashboard.value?.recentTransactions) return { labels: [], datasets: [] }

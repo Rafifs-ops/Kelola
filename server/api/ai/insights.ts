@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { PrismaClient } from '@prisma/client'
-import { requireAuth } from '../../utils/auth' // sidebase auth imports
+import { requireAuth } from '../../utils/auth'
 
 const prisma = new PrismaClient()
 

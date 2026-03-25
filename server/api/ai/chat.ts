@@ -11,23 +11,29 @@ export default defineEventHandler(async (event) => {
 
   try {
     const { prompt, history } = await readBody(event)
+    console.log('[DEBUG] AI Chat Request:', { prompt, historyLength: history?.length })
+
+    if (!config.geminiApiKey) {
+      console.error('Missing GEMINI_API_KEY in runtimeConfig')
+      throw createError({ statusCode: 500, statusMessage: 'Server configuration error' })
+    }
 
     const genAI = new GoogleGenerativeAI(config.geminiApiKey as string)
-    
+
     // Scrape user context to make AI hyper-personalized
-    const txs = await prisma.transaction.findMany({ where: { userId }})
-    const income = txs.filter(t => t.type === 'INCOME').reduce((a,b)=>a+b.amount,0)
-    const exp = txs.filter(t => t.type === 'EXPENSE').reduce((a,b)=>a+b.amount,0)
-    
-    const ports = await prisma.portfolio.findMany({ where: { userId }})
-    const cryptos = ports.filter(p=>p.type==='CRYPTO').map(p=>`${p.amount} ${p.symbol}`).join(', ')
-    const stocks = ports.filter(p=>p.type==='STOCK').map(p=>`${p.amount} Lot ${p.symbol}`).join(', ')
-    
-    const debts = await prisma.debt.findMany({ where: { userId }})
-    const debtList = debts.map(d=>`${d.title}: Sisa Rp${d.remaining_amount}`).join(', ')
-    
-    const budgets = await prisma.budget.findMany({ where: { userId }, include: { category: true }})
-    const budgetList = budgets.map(b=>`${b.category.name}: Limit Rp${b.monthlyLimit}`).join(', ')
+    const txs = await prisma.transaction.findMany({ where: { userId } })
+    const income = txs.filter(t => t.type === 'INCOME').reduce((a, b) => a + b.amount, 0)
+    const exp = txs.filter(t => t.type === 'EXPENSE').reduce((a, b) => a + b.amount, 0)
+
+    const ports = await prisma.portfolio.findMany({ where: { userId } })
+    const cryptos = ports.filter(p => p.type === 'CRYPTO').map(p => `${p.amount} ${p.symbol}`).join(', ')
+    const stocks = ports.filter(p => p.type === 'STOCK').map(p => `${p.amount} Lot ${p.symbol}`).join(', ')
+
+    const debts = await prisma.debt.findMany({ where: { userId } })
+    const debtList = debts.map(d => `${d.title}: Sisa Rp${d.remaining_amount}`).join(', ')
+
+    const budgets = await prisma.budget.findMany({ where: { userId }, include: { category: true } })
+    const budgetList = budgets.map(b => `${b.category?.name || 'Kategori'}: Limit Rp${b.monthlyLimit}`).join(', ')
 
     const systemInstruction = `Kamu adalah 'Kelola AI', konsultan keuangan pribadi Gen-Z yang santai, suportif, dan cerdas. Gunakan gaya bahasa anak muda masa kini dan emoji sewajarnya.
 PENTING: Gunakan data finansial rahasia milik user ini sebagai dasar seluruh jawabanmu dan analisamu:
@@ -42,7 +48,7 @@ Instruksi tambahan:
 - Gunakan data tersebut secara natural. Misal jika dia bertanya "Boleh gak aku beli sepatu 2 juta?", cek apakah Saldo uang tunainya mencukupi, lalu periksa apakah dia punya hutang yang belum dibayar. Jika berhutang, sarankan untuk melunasi hutang dulu.
 - Berikan saran yang logis dan membangun secara mental.`
 
-    const model = genAI.getGenerativeModel({ 
+    const model = genAI.getGenerativeModel({
       model: 'gemini-2.5-flash',
       systemInstruction
     })
@@ -55,8 +61,10 @@ Instruksi tambahan:
           const encoder = new TextEncoder()
           try {
             for await (const chunk of result.stream) {
-              if (chunk.text()) {
-                controller.enqueue(encoder.encode(chunk.text()))
+              const text = chunk.text()
+              if (text) {
+                console.log('[DEBUG] Sending chunk:', text.substring(0, 30).replace(/\n/g, ' ') + '...')
+                controller.enqueue(encoder.encode(text))
               }
             }
           } catch (err) {
@@ -83,8 +91,10 @@ Instruksi tambahan:
           const encoder = new TextEncoder()
           try {
             for await (const chunk of result.stream) {
-              if (chunk.text()) {
-                controller.enqueue(encoder.encode(chunk.text()))
+              const text = chunk.text()
+              if (text) {
+                console.log('[DEBUG] Sending chunk (chat):', text.substring(0, 30).replace(/\n/g, ' ') + '...')
+                controller.enqueue(encoder.encode(text))
               }
             }
           } catch (err) {
@@ -99,10 +109,10 @@ Instruksi tambahan:
   } catch (error: any) {
     console.error('AI Chat Error:', error)
     const statusCode = error.statusCode || 500
-    const statusMessage = error.message.includes('429') 
+    const statusMessage = error.message.includes('429')
       ? 'Maaf, kuota harian Kelola AI sudah habis. Coba lagi besok ya! 🙏'
       : 'Ups, server AI lagi error. Coba sebentar lagi ya!'
-    
+
     throw createError({
       statusCode,
       statusMessage
