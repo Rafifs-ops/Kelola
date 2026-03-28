@@ -1,13 +1,14 @@
 <template>
   <div class="px-6 py-8 md:p-12 pb-32 max-w-4xl mx-auto">
 
-    <div class="flex items-center justify-between mb-8">
+    <!--Header-->
+    <div class="flex flex-col md:flex-row items-center justify-between mb-8">
       <div>
-        <h1 class="text-4xl font-extrabold text-kelola-teal tracking-tighter">Aset Saya</h1>
+        <h1 class="text-4xl font-extrabold text-kelola-teal tracking-tighter">Aset Kripto & Saham</h1>
         <p class="mt-1 font-semibold text-sm">Kelola portofolio Kripto & Saham Anda dengan harga live.
         </p>
       </div>
-      <div class="flex gap-2">
+      <div class="flex gap-2 mt-4 md:mt-0">
         <button @click="openModal('CRYPTO')"
           class="bg-gradient-to-r from-kelola-lime to-kelola-pale text-kelola-teal px-5 py-3 rounded-2xl font-black shadow-[0_0_20px_rgba(214,251,0,0.3)] hover:scale-105 transition-transform uppercase tracking-widest text-xs border border-transparent">
           + Kripto
@@ -20,7 +21,7 @@
     </div>
 
     <!-- Stats -->
-    <div class="grid grid-cols-2 gap-4 mb-8">
+    <div class="grid grid-rows-2 md:grid-cols-2 gap-4 mb-8 md:mb-0">
       <div
         class="bg-white/80 backdrop-blur-md p-6 rounded-3xl shadow-sm border border-white/20 flex flex-col justify-center">
         <span class="text-xs font-black text-gray-700 uppercase tracking-widest mb-1">Total Kripto</span>
@@ -49,7 +50,8 @@
     <div v-else class="space-y-4">
       <div v-for="asset in portfolios" :key="asset.id"
         class="bg-white/80 backdrop-blur-md p-5 rounded-2xl flex items-center justify-between shadow-sm border border-transparent hover:border-kelola-lime/20 transition-all">
-        <div class="flex items-center gap-4">
+        <!--Asset Symbol-->
+        <div class="flex flex-col md:flex-row items-start gap-4">
           <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl font-black tracking-tighter"
             :class="asset.type === 'CRYPTO' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'">
             {{ asset.symbol.substring(0, 3).toUpperCase() }}
@@ -60,7 +62,9 @@
             </p>
           </div>
         </div>
-        <div class="flex items-center gap-4">
+
+        <!--Asset Value-->
+        <div class="flex flex-col md:flex-row items-end gap-4">
           <div class="text-right">
             <p class="text-[10px] font-bold uppercase tracking-widest">Estimasi Nilai (Live)</p>
             <p class="font-black text-kelola-teal">Rp {{ getLiveTargetValue(asset).toLocaleString('id-ID') }}</p>

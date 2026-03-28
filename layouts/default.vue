@@ -85,6 +85,8 @@
     <!-- Mobile Bottom Navigation -->
     <nav
       class="md:hidden fixed bottom-0 left-0 w-full bg-kelola-teal/90 backdrop-blur-2xl text-white flex justify-between px-6 py-3 pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.3)] z-50 rounded-t-[2.5rem] border-t border-white/10">
+
+      <!-- Home -->
       <NuxtLink to="/" class="flex flex-col items-center justify-center text-white/50 w-12"
         active-class="text-kelola-lime scale-110 transition-transform">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24"
@@ -94,6 +96,8 @@
         </svg>
         <span class="text-[9px] font-black uppercase tracking-wider">Home</span>
       </NuxtLink>
+
+      <!-- Data -->
       <NuxtLink to="/transactions" class="flex flex-col items-center justify-center text-white/50 w-12"
         active-class="text-kelola-lime scale-110 transition-transform">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24"
@@ -101,7 +105,7 @@
           <path stroke-linecap="round" stroke-linejoin="round"
             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
-        <span class="text-[9px] font-black uppercase tracking-wider">Log</span>
+        <span class="text-[9px] font-black uppercase tracking-wider">Data</span>
       </NuxtLink>
 
       <!-- FAB Add Button -->
@@ -115,6 +119,7 @@
         </NuxtLink>
       </div>
 
+      <!-- Assets -->
       <NuxtLink to="/portfolios" class="flex flex-col items-center justify-center text-white/50 w-12"
         active-class="text-kelola-lime scale-110 transition-transform">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24"
@@ -123,6 +128,8 @@
         </svg>
         <span class="text-[9px] font-black uppercase tracking-wider">Aset</span>
       </NuxtLink>
+
+      <!-- AI -->
       <NuxtLink to="/ai" class="flex flex-col items-center justify-center text-white/50 w-12"
         active-class="text-kelola-lime scale-110 transition-transform">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24"

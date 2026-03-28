@@ -1,5 +1,7 @@
 <template>
   <div class="space-y-6 animate-fade-in pb-20 md:pb-0">
+
+    <!-- Header -->
     <div class="flex items-center justify-between mb-8">
       <div>
         <h1 class="text-4xl font-extrabold text-kelola-teal tracking-tighter">Transaksi</h1>
@@ -82,7 +84,7 @@
             </div>
           </div>
           <div>
-            <p class="font-bold text-gray-800 text-lg mb-0.5">{{ tx.category?.name || 'Lainnya' }}</p>
+            <p class="font-bold text-gray-800 text-lg mb-0.5">{{ tx.category?.name || 'Hutang' }}</p>
             <div class="flex items-center gap-2">
               <p class="text-xs text-gray-400 font-semibold">{{ new Date(tx.date).toLocaleDateString('id-ID', {
                 day:

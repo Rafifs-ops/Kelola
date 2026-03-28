@@ -64,8 +64,8 @@
     <!-- Main Balances -->
     <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div
-        class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100/50 flex flex-col justify-between hover:shadow-md transition">
-        <div class="flex items-center gap-3 mb-6">
+        class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100/50 flex flex-col justify-around hover:shadow-md transition">
+        <div class="flex items-center">
           <div class="w-12 h-12 rounded-2xl bg-kelola-sea/10 flex items-center justify-center text-kelola-sea">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -75,8 +75,9 @@
           </div>
           <span class="font-bold text-gray-600 uppercase tracking-wider text-xs">Saldo Cash (IDR)</span>
         </div>
-        <h2 class="text-5xl font-extrabold text-kelola-teal tracking-tighter">Rp {{ formatNumber(dashboard?.fiatBalance
-          || 0) }}</h2>
+        <h2 class="md:text-5xl text-3xl font-extrabold text-kelola-teal tracking-tighter">Rp {{
+          formatNumber(dashboard?.fiatBalance
+            || 0) }}</h2>
       </div>
 
       <!-- Assets (Stocks/Crypto) -->
@@ -94,7 +95,7 @@
             Investasi</span>
         </div>
         <h2
-          class="text-5xl font-extrabold text-kelola-teal tracking-tighter relative z-10 group-hover:scale-[1.02] transition-transform origin-left">
+          class="md:text-5xl text-3xl font-extrabold text-kelola-teal tracking-tighter relative z-10 group-hover:scale-[1.02] transition-transform origin-left">
           Rp {{ formatNumber(totalAssetValue) }}
         </h2>
         <p
@@ -130,6 +131,7 @@
       </div>
     </section>
 
+    <!-- Recent Transactions -->
     <section>
       <div class="flex items-center justify-between mb-6 mt-6">
         <h3 class="text-2xl font-extrabold tracking-tight">Riwayat <span class="text-kelola-dark/60">Bulan
