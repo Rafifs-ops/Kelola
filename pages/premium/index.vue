@@ -90,7 +90,7 @@ const payWithMidtrans = async () => {
           try { await $fetch('/api/payment/success', { method: 'POST', headers: useRequestHeaders(['cookie']) }) } catch (e) { }
           if (session.value?.user) session.value.user.is_premium = true;
           await fetchSession();
-          alert("Pembayaran sukses! Selamat menikmati fitur Sultan Kelola.");
+          alert("Pembayaran sukses! Selamat menikmati fitur Premium Kelola.");
           useRouter().push('/');
         },
         onPending: function (result) { alert("Menunggu pembayaran!"); },

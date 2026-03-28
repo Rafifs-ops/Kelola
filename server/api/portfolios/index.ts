@@ -5,8 +5,8 @@ import { randomUUID } from 'node:crypto'
 const prisma = new PrismaClient()
 
 export default defineEventHandler(async (event) => {
-  const session = await requireAuth(event)
-  const method = event.node.req.method
+  const session = await requireAuth(event) // Mendapatkan data auth di server
+  const method = event.node.req.method // Mendapatkan method GET/POST
 
   if (method === 'GET') {
     return prisma.portfolio.findMany({

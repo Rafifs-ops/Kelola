@@ -71,7 +71,7 @@
         <p class="text-gray-400 font-bold mb-2">Belum ada transaksi di kategori ini.</p>
       </div>
 
-      <div v-for="tx in filteredTransactions" :key="tx.id"
+      <NuxtLink :to="`/transactions/${tx.id}`" v-for="tx in filteredTransactions" :key="tx.id"
         class="flex items-center justify-between bg-white/80 backdrop-blur-md p-5 rounded-3xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-transparent hover:border-kelola-lime/20 hover:shadow-md transition cursor-pointer active:scale-[0.98]">
         <div class="flex items-center gap-5">
           <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-inner relative"
@@ -102,7 +102,7 @@
             {{ tx.type === 'INCOME' ? '+' : '-' }} Rp {{ formatNumber(tx.amount) }}
           </p>
         </div>
-      </div>
+      </NuxtLink>
     </div>
   </div>
 </template>

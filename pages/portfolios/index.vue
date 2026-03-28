@@ -133,22 +133,23 @@
 </template>
 
 <script setup>
+// Mendapatkan Seluruh data Aset user
 const { data: portfolios, pending, refresh: refreshPortfolios } = useFetch('/api/portfolios', { headers: useRequestHeaders(['cookie']) })
 
-// Reactive Queries ensuring owned assets are always fetched
+// Membuat data query url API untuk mengambil harga crypto dan saham
 const cryptoQuery = computed(() => {
   const base = ['bitcoin', 'ethereum', 'binancecoin', 'ripple', 'cardano', 'solana', 'dogecoin', 'pepe', 'shiba-inu']
   const owned = portfolios.value?.filter(p => p.type === 'CRYPTO').map(p => p.symbol.toLowerCase()) || []
   return Array.from(new Set([...base, ...owned])).join(',')
 })
-
 const stockQuery = computed(() => {
   const base = ['BBCA', 'BBRI', 'BMRI', 'BBNI', 'GOTO', 'TLKM', 'ASII', 'AMMN', 'BREN', 'BRPT']
   const owned = portfolios.value?.filter(p => p.type === 'STOCK').map(p => p.symbol.toUpperCase()) || []
   return Array.from(new Set([...base, ...owned])).join(',')
 })
+// cth output: "bitcoin,ethereum,binancecoin,ripple,cardano,solana,dogecoin,pepe,shiba-inu"
 
-// Fetch live prices reactively using callback () => Url
+// Mengambil data harga crypto dan saham
 const { data: cryptoPrices, pending: pendingCrypto } = useFetch(() => `/api/crypto?ids=${cryptoQuery.value}`)
 const { data: sahamPrices, pending: pendingSaham } = useFetch(() => `/api/saham?symbols=${stockQuery.value}`)
 
@@ -158,7 +159,6 @@ const cryptoOptions = computed(() => {
   // Filter out meta keys like 'error' or 'statusCode' if it's an error object
   return Object.keys(cryptoPrices.value).filter(key => key !== 'error' && key !== 'statusCode')
 })
-
 const stockOptions = computed(() => {
   if (!sahamPrices.value?.data?.results || !Array.isArray(sahamPrices.value.data.results)) {
     return stockQuery.value.split(',').filter(Boolean)
@@ -167,7 +167,9 @@ const stockOptions = computed(() => {
     .map(s => s.symbol)
     .filter(t => typeof t === 'string' && t.length > 0)
 })
+// cth output: ["BBCA","BBRI","BMRI","BBNI","GOTO","TLKM","ASII","AMMN","BREN","BRPT"]
 
+// Fungsi untuk menghitung jumlah aset * harga live aset saat ini (real-time)
 const getLiveTargetValue = (asset) => {
   if (asset.type === 'CRYPTO' && cryptoPrices.value) {
     const symbolId = asset.symbol.toLowerCase()
@@ -188,11 +190,11 @@ const getLiveTargetValue = (asset) => {
   return asset.amount * (asset.buyPrice || 0)
 }
 
+// Menghitung total nilai aset crypto dan saham
 const totalCryptoValue = computed(() => {
   if (!portfolios.value) return 0
   return portfolios.value.filter(p => p.type === 'CRYPTO').reduce((acc, p) => acc + getLiveTargetValue(p), 0)
 })
-
 const totalStockValue = computed(() => {
   if (!portfolios.value) return 0
   return portfolios.value.filter(p => p.type === 'STOCK').reduce((acc, p) => acc + getLiveTargetValue(p), 0)

@@ -155,7 +155,7 @@
               {{ tx.category?.icon || (tx.type === 'INCOME' ? '💰' : '💸') }}
             </div>
             <div>
-              <p class="font-bold text-gray-800 text-lg mb-0.5">{{ tx.category?.name || 'Lainnya' }}</p>
+              <p class="font-bold text-gray-800 text-lg mb-0.5">{{ tx.category?.name || 'Hutang' }}</p>
               <div class="flex items-center gap-2">
                 <p class="text-xs text-gray-600 font-bold">{{ new Date(tx.date).toLocaleDateString('id-ID') }}</p>
               </div>
