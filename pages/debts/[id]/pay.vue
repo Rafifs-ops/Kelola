@@ -85,7 +85,8 @@ const submitPayment = async () => {
       body: {
         type: 'EXPENSE',
         amount: parseFloat(amount.value),
-        categoryId: null, // No category, purely debt payment
+        categoryId: '525dec73-5d8b-41df-9171-e1f55905458e',
+        priority: 'PENTING',
         debtId: debt.value.id,
         date: new Date().toISOString(),
         description: `Cicilan untuk: ${debt.value.title}`

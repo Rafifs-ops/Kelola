@@ -1,5 +1,6 @@
 <template>
   <div class="max-w-xl mx-auto space-y-8 animate-fade-in pb-20 md:pb-0 relative z-10 w-full">
+    <!-- Header -->
     <div class="flex items-center gap-4 mb-4">
       <NuxtLink to="/transactions"
         class="w-12 h-12 bg-white/50 backdrop-blur-md rounded-2xl flex items-center justify-center text-kelola-teal shadow-md hover:scale-105 transition-transform border border-white/20">

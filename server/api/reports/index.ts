@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
   if (!session || !session.user) {
     throw createError({ statusCode: 401, message: 'Unauthorized' })
   }
-  
+
   // @ts-ignore
   const userId = session.user.id
   // @ts-ignore
@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
 
   // Demo limit check: if not premium, check if they've used this feature in the last 30 days
   // Just allowing it for simplicity in the demo, but logging limitation logic here
-  
+
   const transactions = await prisma.transaction.findMany({
     where: { userId },
     include: { category: true },
@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
   })
 
   setResponseHeader(event, 'Content-Type', 'text/csv')
-  setResponseHeader(event, 'Content-Disposition', 'attachment; filename="Laporan_Keuangan_Kelola.csv"')
-  
+  setResponseHeader(event, 'Content-Disposition', `attachment; filename="Laporan_Keuangan_Kelola_${session.user.name}_${new Date().toISOString().split('T')[0]}.csv"`)
+
   return csv
 })

@@ -1,5 +1,6 @@
 <template>
   <div class="space-y-6 pb-20 md:pb-0 animate-fade-in relative z-10 w-full">
+    <!-- Header -->
     <div class="flex items-center justify-between mb-8">
       <div>
         <h1 class="text-4xl font-extrabold text-kelola-teal tracking-tighter">Hutang</h1>
@@ -30,16 +31,18 @@
     </div>
 
     <div v-else class="space-y-5">
+      <!--Jika Hutang tidak ada-->
       <div v-if="debts?.length === 0"
         class="text-center py-16 bg-white/50 backdrop-blur-md rounded-[2.5rem] shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-white/20 border-dashed">
         <div class="text-5xl mb-4 drop-shadow-sm">🤝</div>
         <p class="text-gray-600 font-bold mb-3">Wah hebat! Kamu tidak punya hutang aktif.</p>
       </div>
 
+      <!-- Menampilkan data hutang -->
       <div v-for="d in debts" :key="d.id"
         class="bg-white/80 backdrop-blur-md p-8 rounded-[2.5rem] shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-white/20 hover:shadow-md transition group relative overflow-hidden">
         <div v-if="d.remaining_amount <= 0"
-          class="absolute top-5 right-5 bg-kelola-lime text-kelola-teal text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-lg border border-white/20 shadow-sm">
+          class="md:absolute md:top-5 md:right-5 bg-kelola-lime text-kelola-teal text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-lg border border-white/20 shadow-sm">
           Lunas</div>
         <div class="flex items-center gap-4 mb-6">
           <div>
@@ -52,12 +55,13 @@
           </div>
         </div>
 
-        <div class="flex justify-between items-end bg-gray-50/50 p-5 rounded-2xl border border-gray-100">
+        <div
+          class="flex flex-col md:flex-row md:justify-between md:items-end bg-gray-50/50 p-5 rounded-2xl border border-gray-100">
           <div>
             <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total</p>
             <p class="font-extrabold text-gray-400 line-through text-lg">Rp {{ formatNumber(d.total_amount) }}</p>
           </div>
-          <div class="text-right">
+          <div class="md:text-right">
             <p class="text-[10px] font-black text-red-600 uppercase tracking-widest mb-1"
               :class="d.remaining_amount <= 0 ? 'text-gray-600' : ''">Sisa Dibayar</p>
             <p class="font-black text-3xl tracking-tighter"

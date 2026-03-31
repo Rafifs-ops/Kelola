@@ -11,8 +11,8 @@ export default defineEventHandler(async (event) => {
   }
   // @ts-ignore
   const userId = session.user.id as string
-
   const method = event.node.req.method
+
   if (method === 'GET') {
     const query = getQuery(event)
     const month = query.month ? parseInt(query.month as string) : null
@@ -38,17 +38,21 @@ export default defineEventHandler(async (event) => {
 
   if (method === 'POST') {
     const body = await readBody(event)
-    
-    if (body.type === 'EXPENSE' && body.debtId) {
+
+    // Update sisa hutang (bayar hutang)
+    if (body.type === 'EXPENSE' && body.categoryId === '525dec73-5d8b-41df-9171-e1f55905458e' && body.debtId) {
       const debt = await prisma.debt.findUnique({ where: { id: body.debtId } })
       if (!debt) throw createError({ statusCode: 404, message: 'Debt not found' })
       if (debt.remaining_amount < body.amount) {
         throw createError({ statusCode: 400, message: 'Payment exceeds remaining debt' })
       }
-      
+
       await prisma.debt.update({
         where: { id: debt.id },
-        data: { remaining_amount: debt.remaining_amount - body.amount }
+        data: {
+          remaining_amount: debt.remaining_amount - body.amount,
+          status: debt.remaining_amount - body.amount === 0 ? 'PAID' : 'UNPAID'
+        }
       })
     }
 
@@ -58,21 +62,21 @@ export default defineEventHandler(async (event) => {
       const budget = await prisma.budget.findFirst({
         where: { userId, categoryId: body.categoryId, monthYear }
       })
-      
+
       if (budget) {
         const minDate = new Date(`${monthYear}-01T00:00:00.000Z`)
         const nextMonth = new Date(minDate)
         nextMonth.setMonth(nextMonth.getMonth() + 1)
-        
+
         const currentSum = await prisma.transaction.aggregate({
           where: { userId, categoryId: body.categoryId, type: 'EXPENSE', date: { gte: minDate, lt: nextMonth } },
           _sum: { amount: true }
         })
         const used = currentSum._sum.amount || 0
         if (used + Number(body.amount) > budget.monthlyLimit) {
-          throw createError({ 
-            statusCode: 400, 
-            statusMessage: `Limit anggaran kategori ini sisa Rp ${budget.monthlyLimit - used}. Transaksi ditolak.` 
+          throw createError({
+            statusCode: 400,
+            statusMessage: `Limit anggaran kategori ini sisa Rp ${budget.monthlyLimit - used}. Transaksi ditolak.`
           })
         }
       }

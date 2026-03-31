@@ -12,6 +12,7 @@ export default defineEventHandler(async (event) => {
   // @ts-ignore
   const userId = session.user.id as string
 
+  // Mengambil data hutang
   const method = event.node.req.method
   if (method === 'GET') {
     return await prisma.debt.findMany({
@@ -20,9 +21,10 @@ export default defineEventHandler(async (event) => {
     })
   }
 
+  // Menambahkan data hutang
   if (method === 'POST') {
     const { title, total_amount, dueDate } = await readBody(event)
-    
+
     return await prisma.debt.create({
       data: {
         id: randomUUID(),
