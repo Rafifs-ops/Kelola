@@ -95,12 +95,16 @@
         {{ loading ? 'MENYIMPAN...' : 'SIMPAN' }}
       </button>
     </form>
+
+    <Notify v-if="showNotify" :msg="notifyMsg" :show="showNotify" />
   </div>
 </template>
 
 <script setup>
 const { session } = useCustomAuth()
 const router = useRouter()
+const showNotify = ref(false)
+const notifyMsg = ref('')
 useSeoMeta({ title: 'Tambah Transaksi - Kelola' })
 
 const { data: categories } = useFetch('/api/categories')
@@ -151,9 +155,11 @@ const submitTransaction = async () => {
     router.push('/transactions')
   } catch (e) {
     if (e.data?.statusMessage) {
-      alert(e.data.statusMessage)
+      notifyMsg.value = e.data.statusMessage
+      showNotify.value = true
     } else {
-      alert('Gagal menyimpan transaksi.')
+      notifyMsg.value = 'Gagal menyimpan transaksi.'
+      showNotify.value = true
     }
   } finally {
     loading.value = false

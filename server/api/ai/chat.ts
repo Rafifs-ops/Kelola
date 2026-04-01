@@ -9,9 +9,28 @@ export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
   const userId = session.user.id
 
+  const user = await prisma.user.findUnique({ where: { id: userId } })
+  if (!user) {
+    throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+  }
+
+  if (!user.is_premium && user.aiChatCount >= 1) {
+    throw createError({
+      statusCode: 403,
+      statusMessage: 'Maaf, batas penggunaan AI Chat gratis (1x) sudah habis. Yuk, upgrade ke Premium buat akses tanpa batas! 🚀'
+    })
+  }
+
   try {
     const { prompt, history } = await readBody(event)
     console.log('[DEBUG] AI Chat Request:', { prompt, historyLength: history?.length })
+
+    if (!user.is_premium) {
+      await prisma.user.update({
+        where: { id: userId },
+        data: { aiChatCount: { increment: 1 } }
+      })
+    }
 
     if (!config.geminiApiKey) {
       console.error('Missing GEMINI_API_KEY in runtimeConfig')

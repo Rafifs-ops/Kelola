@@ -53,8 +53,14 @@
           <div v-else>
             <p v-if="insightPending" class="text-sm text-white/90 animate-pulse font-bold">Meracik insight personal
               untukmu...</p>
-            <p v-else class="text-sm text-white/90 leading-relaxed font-medium animate-fade-in-insight">{{
-              insight?.insight || 'Yuk, catat transaksi pertamamu agar AI bisa memberi masukan!' }}</p>
+            <div v-else class="animate-fade-in-insight">
+              <p class="text-sm text-white/90 leading-relaxed font-medium">{{
+                insight?.insight || 'Yuk, catat transaksi pertamamu agar AI bisa memberi masukan!' }}</p>
+              <NuxtLink v-if="insight?.isLimitReached" to="/premium"
+                class="inline-block mt-3 bg-gradient-to-r from-kelola-lime to-kelola-pale text-kelola-teal px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-widest hover:scale-105 transition-transform shadow-[0_0_15px_rgba(214,251,0,0.4)]">
+                🚀 Upgrade Premium
+              </NuxtLink>
+            </div>
           </div>
         </div>
       </div>

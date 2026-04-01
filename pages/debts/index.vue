@@ -42,17 +42,28 @@
       <div v-for="d in debts" :key="d.id"
         class="bg-white/80 backdrop-blur-md p-8 rounded-[2.5rem] shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-white/20 hover:shadow-md transition group relative overflow-hidden">
         <div v-if="d.remaining_amount <= 0"
-          class="md:absolute md:top-5 md:right-5 bg-kelola-lime text-kelola-teal text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-lg border border-white/20 shadow-sm">
+          class="bg-kelola-lime mb-5 text-kelola-teal text-[10px] text-center font-black uppercase tracking-widest px-4 py-1.5 rounded-lg border border-white/20 shadow-sm">
           Lunas</div>
-        <div class="flex items-center gap-4 mb-6">
-          <div>
-            <h3 class="font-black text-gray-800 text-2xl tracking-tight mb-1"
-              :class="d.remaining_amount <= 0 ? 'line-through text-gray-400' : ''">{{ d.title }}</h3>
-            <p v-if="d.dueDate" class="text-xs font-bold text-gray-600 mt-0.5 uppercase tracking-wide">Tenggat: <span
-                class="text-kelola-teal font-black underline underline-offset-2 decoration-kelola-lime/50">{{ new
-                  Date(d.dueDate).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })
-                }}</span></p>
+        <div class="flex items-start justify-between mb-6">
+          <div class="flex items-center gap-4">
+            <div>
+              <h3 class="font-black text-gray-800 text-2xl tracking-tight mb-1"
+                :class="d.remaining_amount <= 0 ? 'line-through text-gray-400' : ''">{{ d.title }}</h3>
+              <p v-if="d.dueDate" class="text-xs font-bold text-gray-600 mt-0.5 uppercase tracking-wide">Tenggat: <span
+                  class="text-kelola-teal font-black underline underline-offset-2 decoration-kelola-lime/50">{{ new
+                    Date(d.dueDate).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })
+                  }}</span></p>
+            </div>
           </div>
+          <button @click="deleteDebt(d.id)"
+            class="w-10 h-10 flex items-center justify-center bg-red-50/80 text-red-500 rounded-2xl hover:bg-red-500 hover:text-white transition-all shadow-sm hover:shadow-md border border-red-100/50 flex-shrink-0"
+            title="Hapus Hutang">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+              </path>
+            </svg>
+          </button>
         </div>
 
         <div
@@ -160,6 +171,20 @@ const saveDebt = async () => {
     alert('Gagal menyimpan catatan hutang')
   } finally {
     saving.value = false
+  }
+}
+
+const deleteDebt = async (id) => {
+  if (confirm('Yakin ingin menghapus hutang ini beserta semua riwayat cicilannya?')) {
+    try {
+      await $fetch('/api/debts', {
+        method: 'DELETE',
+        body: { id }
+      })
+      await refresh()
+    } catch (e) {
+      alert('Gagal menghapus hutang')
+    }
   }
 }
 

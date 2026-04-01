@@ -56,7 +56,7 @@
         <div class="flex flex-col gap-2 mt-4 pt-4 border-t border-gray-100">
           <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Catatan / Deskripsi</span>
           <p class="font-medium text-gray-700 text-sm italic">{{ transaction.description || 'Tidak ada catatan khusus.'
-            }}</p>
+          }}</p>
         </div>
       </div>
 

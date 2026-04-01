@@ -38,4 +38,23 @@ export default defineEventHandler(async (event) => {
       }
     })
   }
+
+  // Menghapus data hutang
+  if (method === 'DELETE') {
+    const { id } = await readBody(event)
+    
+    const debt = await prisma.debt.findUnique({ where: { id } })
+    if (!debt || debt.userId !== userId) {
+      throw createError({ statusCode: 404, message: 'Hutang tidak ditemukan' })
+    }
+
+    // Delete transactions associated with this debt
+    await prisma.transaction.deleteMany({
+      where: { debtId: id, userId }
+    })
+
+    return await prisma.debt.delete({
+      where: { id }
+    })
+  }
 })

@@ -1,5 +1,6 @@
 <template>
   <div class="space-y-6 pb-20 md:pb-0 animate-fade-in relative z-10">
+    <!-- Header -->
     <div class="flex items-center justify-between mb-8">
       <div>
         <h1 class="text-4xl font-extrabold text-kelola-teal tracking-tighter">Anggaran</h1>
@@ -22,6 +23,7 @@
         Upgrade</NuxtLink>
     </div>
 
+    <!-- Loading -->
     <div v-if="pending" class="text-center py-20 flex flex-col items-center">
       <div class="w-12 h-12 border-4 border-kelola-lime border-t-kelola-teal rounded-full animate-spin shadow-lg"></div>
       <p class="mt-4 font-black text-kelola-teal">Merumuskan anggaranmu...</p>

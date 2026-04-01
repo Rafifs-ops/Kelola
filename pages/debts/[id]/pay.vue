@@ -45,17 +45,21 @@
 
         <button type="submit" :disabled="loading || !amount || amount <= 0"
           class="w-full mt-6 bg-gradient-to-r from-kelola-lime to-kelola-pale text-kelola-teal py-4 rounded-2xl font-black text-lg uppercase tracking-widest shadow-[0_10px_30px_rgba(214,251,0,0.3)] hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 border-b-4 border-white/20">
-          {{ loading ? 'MEMPROSES...' : 'CATA PELUNASAN' }}
+          {{ loading ? 'MEMPROSES...' : 'Bayar Hutang' }}
         </button>
       </form>
 
     </div>
+
+    <Notify v-if="showNotify" :msg="notifyMsg" :show="showNotify" />
   </div>
 </template>
 
 <script setup>
 const route = useRoute()
 const router = useRouter()
+const showNotify = ref(false)
+const notifyMsg = ref('')
 const debtId = route.params.id
 
 // Re-using debt listing API to get the specific debt. (Filtering client side for simplicity here)
@@ -70,7 +74,8 @@ const loading = ref(false)
 
 const submitPayment = async () => {
   if (amount.value > debt.value.remaining_amount) {
-    alert("Nominal pembayaran melebihi sisa hutang!")
+    notifyMsg.value = "Nominal pembayaran melebihi sisa hutang!"
+    showNotify.value = true
     return
   }
 
@@ -92,10 +97,12 @@ const submitPayment = async () => {
         description: `Cicilan untuk: ${debt.value.title}`
       }
     })
-    alert('Hutang berhasil dibayar!')
-    router.push('/debts')
+    notifyMsg.value = 'Hutang berhasil dibayar!'
+    showNotify.value = true
+    setTimeout(() => router.push('/debts'), 2000)
   } catch (e) {
-    alert('Terjadi kesalahan saat mencatat pembayaran.')
+    notifyMsg.value = e.data.message || 'Terjadi kesalahan saat mencatat pembayaran.'
+    showNotify.value = true
   } finally {
     loading.value = false
   }

@@ -70,6 +70,8 @@
         </p>
       </div>
     </div>
+
+    <Notify v-if="showNotify" :msg="notifyMsg" :show="showNotify" />
   </div>
 </template>
 
@@ -78,6 +80,8 @@ const { session, fetchSession } = useCustomAuth()
 const config = useRuntimeConfig()
 useSeoMeta({ title: 'Premium - Kelola', description: 'Upgrade ke Premium dan nikmati fitur AI tak terbatas di Kelola.' })
 
+const showNotify = ref(false)
+const notifyMsg = ref('')
 const loading = ref(false)
 
 const payWithMidtrans = async () => {
@@ -90,16 +94,27 @@ const payWithMidtrans = async () => {
           try { await $fetch('/api/payment/success', { method: 'POST', headers: useRequestHeaders(['cookie']) }) } catch (e) { }
           if (session.value?.user) session.value.user.is_premium = true;
           await fetchSession();
-          alert("Pembayaran sukses! Selamat menikmati fitur Premium Kelola.");
-          useRouter().push('/');
+          notifyMsg.value = 'Pembayaran sukses! Selamat menikmati fitur Premium Kelola.'
+          showNotify.value = true
+          setTimeout(() => useRouter().push('/'), 2000);
         },
-        onPending: function (result) { alert("Menunggu pembayaran!"); },
-        onError: function (result) { alert("Pembayaran gagal!"); },
-        onClose: function () { console.log('Ditutup'); }
+        onPending: function (result) {
+          notifyMsg.value = 'Pembayaran sedang diproses. Silahkan cek kembali beberapa saat lagi.'
+          showNotify.value = true
+        },
+        onError: function (result) {
+          notifyMsg.value = 'Pembayaran gagal. Silahkan coba lagi.'
+          showNotify.value = true
+        },
+        onClose: function () {
+          notifyMsg.value = 'Pembayaran ditutup. Silahkan coba lagi.'
+          showNotify.value = true
+        }
       })
     }
   } catch (e) {
-    alert("Gagal memanggil Midtrans. Pastikan Server SDK terkonfigurasi dengan benar.")
+    notifyMsg.value = e.data.message || 'Gagal memanggil Midtrans. Pastikan Server SDK terkonfigurasi dengan benar.'
+    showNotify.value = true
   } finally {
     loading.value = false
   }
