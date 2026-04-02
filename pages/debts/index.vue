@@ -135,6 +135,8 @@
         </form>
       </div>
     </div>
+
+    <Notify v-if="showNotify" :msg="notifyMsg" :show="showNotify" />
   </div>
 </template>
 
@@ -146,6 +148,8 @@ const { data: debts, pending, refresh } = useFetch('/api/debts')
 const showAddModal = ref(false)
 const saving = ref(false)
 const form = ref({ title: '', total_amount: '', dueDate: '' })
+const showNotify = ref(false)
+const notifyMsg = ref('')
 
 const totalUnpaid = computed(() => {
   if (!debts.value) return 0
@@ -166,11 +170,17 @@ const saveDebt = async () => {
     })
     showAddModal.value = false
     form.value = { title: '', total_amount: '', dueDate: '' }
+    notifyMsg.value = 'Hutang berhasil ditambahkan'
+    showNotify.value = true
     await refresh()
   } catch (e) {
-    alert('Gagal menyimpan catatan hutang')
+    notifyMsg.value = e.data.message || 'Gagal menyimpan catatan hutang'
+    showNotify.value = true
   } finally {
     saving.value = false
+    setTimeout(() => {
+      showNotify.value = false
+    }, 2000)
   }
 }
 
@@ -181,9 +191,16 @@ const deleteDebt = async (id) => {
         method: 'DELETE',
         body: { id }
       })
+      notifyMsg.value = 'Hutang berhasil dihapus'
+      showNotify.value = true
       await refresh()
     } catch (e) {
-      alert('Gagal menghapus hutang')
+      notifyMsg.value = e.data.message || 'Gagal menghapus hutang'
+      showNotify.value = true
+    } finally {
+      setTimeout(() => {
+        showNotify.value = false
+      }, 2000)
     }
   }
 }

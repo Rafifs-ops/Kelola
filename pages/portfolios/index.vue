@@ -129,6 +129,8 @@
         </form>
       </div>
     </div>
+
+    <Notify v-if="showNotify" :msg="notifyMsg" :show="showNotify" />
   </div>
 </template>
 
@@ -203,6 +205,8 @@ const totalStockValue = computed(() => {
 const showAddModal = ref(false)
 const formLoading = ref(false)
 const form = ref({ type: 'CRYPTO', symbol: '', name: '', quantity: null, buy_price: null })
+const showNotify = ref(false)
+const notifyMsg = ref('')
 
 const openModal = (type) => {
   form.value = { type, symbol: '', name: 'Asset', quantity: null, buy_price: 0 }
@@ -216,11 +220,17 @@ const addAsset = async () => {
     form.value.name = form.value.symbol.toUpperCase()
     await $fetch('/api/portfolios', { method: 'POST', body: form.value, headers: useRequestHeaders(['cookie']) })
     showAddModal.value = false
-    refreshPortfolios()
+    notifyMsg.value = 'Aset berhasil ditambahkan'
+    showNotify.value = true
+    await refreshPortfolios()
   } catch (e) {
-    alert('Gagal menambah aset')
+    notifyMsg.value = e.data.message || 'Gagal menambah aset'
+    showNotify.value = true
   } finally {
     formLoading.value = false
+    setTimeout(() => {
+      showNotify.value = false
+    }, 3000)
   }
 }
 

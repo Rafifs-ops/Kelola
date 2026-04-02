@@ -3,16 +3,16 @@ import { requireAuth } from '../../utils/auth'
 export default defineEventHandler(async (event) => {
   const session = await requireAuth(event)
   if (!session || !session.user) throw createError({ statusCode: 401, message: 'Unauthorized' })
-  
+
   const config = useRuntimeConfig()
   // @ts-ignore
   const userId = session.user.id
   const shortId = userId.substring(0, 8)
   const orderId = `PRM-${shortId}-${Date.now()}`
-  
+
   // Base64 encode Midtrans Server Key
   const authString = Buffer.from(`${config.midtransServerKey}:`).toString('base64')
-  
+
   try {
     const response = await $fetch('https://app.sandbox.midtrans.com/snap/v1/transactions', {
       method: 'POST',
@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
       body: {
         transaction_details: {
           order_id: orderId,
-          gross_amount: 49000
+          gross_amount: 9900
         },
         customer_details: {
           first_name: session.user.name,

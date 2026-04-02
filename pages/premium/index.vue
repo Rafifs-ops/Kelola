@@ -117,6 +117,9 @@ const payWithMidtrans = async () => {
     showNotify.value = true
   } finally {
     loading.value = false
+    setTimeout(() => {
+      showNotify.value = false
+    }, 5000)
   }
 }
 

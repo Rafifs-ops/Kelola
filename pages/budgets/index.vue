@@ -136,6 +136,8 @@
         </form>
       </div>
     </div>
+
+    <Notify v-if="showNotify" :msg="notifyMsg" :show="showNotify" />
   </div>
 </template>
 
@@ -149,6 +151,8 @@ const { data: categories } = useFetch('/api/categories')
 const showAddModal = ref(false)
 const saving = ref(false)
 const form = ref({ categoryId: '', monthlyLimit: '' })
+const showNotify = ref(false)
+const notifyMsg = ref('')
 
 const saveBudget = async () => {
   if (!form.value.categoryId || !form.value.monthlyLimit) return
@@ -163,11 +167,18 @@ const saveBudget = async () => {
     })
     showAddModal.value = false
     form.value = { categoryId: '', monthlyLimit: '' }
+    notifyMsg.value = 'Anggaran berhasil ditambahkan'
+    showNotify.value = true
     await refresh()
   } catch (e) {
-    alert(e.data?.message || 'Gagal menyimpan anggaran')
+    notifyMsg.value = e.data.message || 'Gagal menyimpan anggaran'
+    showNotify.value = true
   } finally {
     saving.value = false
+    showAddModal.value = false
+    setTimeout(() => {
+      showNotify.value = false
+    }, 2000)
   }
 }
 
@@ -178,9 +189,14 @@ const deleteBudget = async (id) => {
       method: 'DELETE',
       body: { id }
     })
-    await refresh()
+    notifyMsg.value = 'Anggaran berhasil dihapus'
+    showNotify.value = true
+    setTimeout(() => {
+      refresh()
+    }, 2000)
   } catch (e) {
-    alert('Gagal menghapus anggaran')
+    notifyMsg.value = e.data.message || 'Gagal menghapus anggaran'
+    showNotify.value = true
   }
 }
 
