@@ -33,8 +33,8 @@
         <h2 class="text-4xl sm:text-5xl font-extrabold text-kelola-teal tracking-tighter mb-4">Akses Sultan</h2>
         <div class="flex items-end gap-2 text-kelola-teal select-none">
           <span class="text-3xl font-bold pb-2">Rp</span>
-          <span class="text-7xl font-black tracking-tighter leading-none text-kelola-lime">49</span>
-          <span class="text-2xl font-bold pb-1 text-kelola-lime">.000</span>
+          <span class="text-7xl font-black tracking-tighter leading-none text-kelola-lime">9</span>
+          <span class="text-2xl font-bold pb-1 text-kelola-lime">.900</span>
           <span class="text-gray-400 text-sm font-bold mb-2 uppercase tracking-widest ml-1">/bulan</span>
         </div>
       </div>
