@@ -15,6 +15,12 @@ export const requireAuth = async (event: any) => {
     const user = await prisma.user.findUnique({ where: { id: decoded.id } }) // Mencari user berdasarkan id
     if (!user) throw new Error('User not found') // Validasi user
 
+    const dateNow = new Date()
+    if (user.is_premium && user.premium_expiry && user.premium_expiry < dateNow) {
+      await prisma.user.update({ where: { id: user.id }, data: { is_premium: false, premium_expiry: null } })
+      user.is_premium = false
+    }
+
     return { // Mengembalikan data user
       user: {
         id: user.id,

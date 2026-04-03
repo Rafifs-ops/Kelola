@@ -13,7 +13,10 @@ export default defineEventHandler(async (event) => {
   // Because Midtrans Webhooks can be delayed up to 2-3 minutes
   await prisma.user.update({
     where: { id: session.user.id },
-    data: { is_premium: true }
+    data: { 
+      is_premium: true,
+      premium_expiry: new Date(new Date().setMonth(new Date().getMonth() + 1))
+    }
   })
 
   return { success: true }

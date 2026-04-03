@@ -6,7 +6,7 @@
         Tingkatkan Levelmu
       </div>
       <h1 class="text-6xl sm:text-7xl font-extrabold text-kelola-teal tracking-tighter drop-shadow-sm mb-4">Kelola <span
-          class="text-kelola-lime drop-shadow-[0_0_10px_rgba(214,251,0,0.5)]">Pro</span>.</h1>
+          class="text-kelola-lime drop-shadow-[0_0_10px_rgba(214,251,0,0.5)]">Premium</span>.</h1>
       <p class="text-gray-500 font-semibold tracking-wide">Buka semua fitur canggih dan asisten AI tanpa batas.</p>
     </div>
 
@@ -64,11 +64,6 @@
         class="w-full bg-gradient-to-r from-kelola-lime to-kelola-pale text-kelola-teal py-6 rounded-3xl font-black text-xl sm:text-2xl uppercase tracking-widest shadow-xl hover:scale-105 active:scale-95 transition-all disabled:opacity-50 border-white/20 relative z-10">
         {{ loading ? 'SABAR DULU...' : 'UPGRADE SEKARANG' }}
       </button>
-      <div class="mt-6 flex flex-col items-center justify-center gap-2 relative z-10">
-        <p class="text-[10px] text-gray-400 uppercase tracking-widest font-black flex items-center gap-2">
-          <span>🔒</span> Pembayaran aman di Sandbox
-        </p>
-      </div>
     </div>
 
     <Notify v-if="showNotify" :msg="notifyMsg" :show="showNotify" />

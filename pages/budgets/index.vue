@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6 pb-20 md:pb-0 animate-fade-in relative z-10">
+  <div class="pb-20 md:pb-0 animate-fade-in">
     <!-- Header -->
     <div class="flex items-center justify-between mb-8">
       <div>
@@ -14,7 +14,7 @@
 
     <!-- Limit Info -->
     <div v-if="!session?.user?.is_premium"
-      class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 p-5 rounded-3xl flex items-center justify-between shadow-sm">
+      class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 p-5 rounded-3xl flex items-center justify-between shadow-sm mb-5">
       <div class="text-sm font-bold text-blue-900 pr-4 leading-tight">
         Akun Gratis: Maksimal 3 Anggaran per Bulan.
       </div>
@@ -89,7 +89,7 @@
 
     <!-- Modal Buat Anggaran -->
     <div v-if="showAddModal"
-      class="fixed inset-0 z-50 flex items-end justify-center sm:items-center bg-kelola-dark/60 backdrop-blur-md p-4 animate-fade-in">
+      class="fixed inset-0 bg-kelola-dark/60 backdrop-blur-md flex items-center justify-center z-50 p-4">
       <div
         class="bg-white/90 backdrop-blur-2xl w-full max-w-md rounded-[3rem] p-8 shadow-2xl relative border border-white/20">
         <button @click="showAddModal = false"

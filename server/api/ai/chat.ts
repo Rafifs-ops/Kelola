@@ -17,13 +17,12 @@ export default defineEventHandler(async (event) => {
   if (!user.is_premium && user.aiChatCount >= 1) {
     throw createError({
       statusCode: 403,
-      statusMessage: 'Maaf, batas penggunaan AI Chat gratis (1x) sudah habis. Yuk, upgrade ke Premium buat akses tanpa batas! 🚀'
+      statusMessage: 'Maaf, batas penggunaan AI Chat gratis (1x) sudah habis. Yuk, upgrade ke Premium buat chat lebih banyak! 🚀'
     })
   }
 
   try {
     const { prompt, history } = await readBody(event)
-    console.log('[DEBUG] AI Chat Request:', { prompt, historyLength: history?.length })
 
     if (!user.is_premium) {
       await prisma.user.update({
@@ -33,7 +32,6 @@ export default defineEventHandler(async (event) => {
     }
 
     if (!config.geminiApiKey) {
-      console.error('Missing GEMINI_API_KEY in runtimeConfig')
       throw createError({ statusCode: 500, statusMessage: 'Server configuration error' })
     }
 
@@ -82,7 +80,6 @@ Instruksi tambahan:
             for await (const chunk of result.stream) {
               const text = chunk.text()
               if (text) {
-                console.log('[DEBUG] Sending chunk:', text.substring(0, 30).replace(/\n/g, ' ') + '...')
                 controller.enqueue(encoder.encode(text))
               }
             }
@@ -112,7 +109,6 @@ Instruksi tambahan:
             for await (const chunk of result.stream) {
               const text = chunk.text()
               if (text) {
-                console.log('[DEBUG] Sending chunk (chat):', text.substring(0, 30).replace(/\n/g, ' ') + '...')
                 controller.enqueue(encoder.encode(text))
               }
             }

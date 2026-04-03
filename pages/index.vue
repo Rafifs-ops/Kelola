@@ -18,7 +18,7 @@
         </div>
         <div v-if="session?.user?.is_premium"
           class="bg-gradient-to-r from-kelola-lime to-kelola-pale text-kelola-teal text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-widest shadow-[0_0_20px_rgba(214,251,0,0.5)]">
-          Pro
+          Premium
         </div>
       </div>
       <div class="mt-4 flex justify-end">

@@ -18,13 +18,13 @@ export default defineEventHandler(async (event) => {
   if (body.transaction_status === 'settlement' || body.transaction_status === 'capture') {
     // Assuming order_id contains userId like `PREMIUM-{userId}-{timestamp}`
     const userId = body.order_id.split('-')[1]
-    
+
     if (userId) {
       await prisma.user.update({
         where: { id: userId },
-        data: { 
+        data: {
           is_premium: true,
-          premium_expiry: new Date(new Date().setFullYear(new Date().getFullYear() + 1)) // 1 year premium
+          premium_expiry: new Date(new Date().setMonth(new Date().getMonth() + 1)) // 1 month premium
         }
       })
     }
