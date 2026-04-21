@@ -90,19 +90,22 @@ model transaction {
 }
 
 model user {
-  id             String    @id @default(uuid())
-  email          String    @unique(map: "User_email_key")
-  name           String?
-  image          String?
-  is_premium     Boolean   @default(false)
-  premium_expiry DateTime?
-  aiChatCount    Int       @default(0)
-  aiInsightCount Int       @default(0)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  password       String?
-  budget         budget[]
-  transactions   transaction[]
-  debts          debt[]
-  portfolios     portfolio[]
+  id                String        @id @default(uuid())
+  email             String        @unique(map: "User_email_key")
+  name              String?
+  image             String?
+  is_premium        Boolean       @default(false)
+  premium_expiry    DateTime?
+  aiChatCount       Int           @default(0)
+  aiInsightCount    Int           @default(0)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  password          String?
+  email_verified_at DateTime?
+  otp_code          String?
+  otp_expires_at    DateTime?
+  budget            budget[]
+  transactions      transaction[]
+  debts             debt[]
+  portfolios        portfolio[]
 }

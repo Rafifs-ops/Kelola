@@ -1,6 +1,8 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
     const { session, fetchSession } = useCustomAuth() // Mengambil data auth di client
-    await fetchSession() // Mengambil data auth di server
+    if (!session.value) {
+      await fetchSession() // Mengambil data auth di server
+    }
     const publicPages = ['/login', '/register'] // Halaman yang tidak memerlukan auth
     const isPublicRoute = publicPages.includes(to.path) // Cek apakah halaman yang diakses adalah halaman publik
 

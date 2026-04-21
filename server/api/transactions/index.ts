@@ -40,7 +40,7 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event)
 
     // Update sisa hutang (bayar hutang)
-    if (body.type === 'EXPENSE' && body.categoryId === '525dec73-5d8b-41df-9171-e1f55905458e' && body.debtId) {
+    if (body.type === 'EXPENSE' && body.debtId) {
       const debt = await prisma.debt.findUnique({ where: { id: body.debtId } })
       if (!debt) throw createError({ statusCode: 404, message: 'Debt not found' })
       if (debt.remaining_amount < body.amount) {

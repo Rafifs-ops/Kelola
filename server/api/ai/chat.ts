@@ -5,15 +5,18 @@ import { requireAuth } from '../../utils/auth'
 const prisma = new PrismaClient()
 
 export default defineEventHandler(async (event) => {
-  const session = await requireAuth(event)
-  const config = useRuntimeConfig()
-  const userId = session.user.id
+  const session = await requireAuth(event) // Mengambil data session auth
+  const config = useRuntimeConfig() // Method untuk membaca variable config di nuxt.config.ts
+  const userId = session.user.id // Mengambil data user id di session
 
-  const user = await prisma.user.findUnique({ where: { id: userId } })
+  const user = await prisma.user.findUnique({ where: { id: userId } }) // Mencari user berdasarkan id
+
+  // Jika user tidak ditemukan
   if (!user) {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
   }
 
+  // Jika user bukan premium dan sudah menggunakan AI Chat 1 kali
   if (!user.is_premium && user.aiChatCount >= 1) {
     throw createError({
       statusCode: 403,
@@ -22,8 +25,9 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const { prompt, history } = await readBody(event)
+    const { prompt, history } = await readBody(event) // Mengambil data prompt dan history dari body request
 
+    // Jika user bukan premium, tambahkan 1 ke aiChatCount
     if (!user.is_premium) {
       await prisma.user.update({
         where: { id: userId },
@@ -31,13 +35,15 @@ export default defineEventHandler(async (event) => {
       })
     }
 
+    // Jika tidak ada geminiApiKey
     if (!config.geminiApiKey) {
       throw createError({ statusCode: 500, statusMessage: 'Server configuration error' })
     }
 
+    // Membuat instance GoogleGenerativeAI dari library gemini
     const genAI = new GoogleGenerativeAI(config.geminiApiKey as string)
 
-    // Scrape user context to make AI hyper-personalized
+    // Mengambil data user untuk dijadikan context bagi AI
     const txs = await prisma.transaction.findMany({ where: { userId } })
     const income = txs.filter(t => t.type === 'INCOME').reduce((a, b) => a + b.amount, 0)
     const exp = txs.filter(t => t.type === 'EXPENSE').reduce((a, b) => a + b.amount, 0)
@@ -70,30 +76,31 @@ Instruksi tambahan:
       systemInstruction
     })
 
+    // Jika tidak ada history, maka akan membuat chat baru
     if (!history || history.length === 0) {
       const result = await model.generateContentStream(prompt)
 
       const stream = new ReadableStream({
         async start(controller) {
-          const encoder = new TextEncoder()
+          const encoder = new TextEncoder() // Meng-encode text menjadi byte array
           try {
             for await (const chunk of result.stream) {
               const text = chunk.text()
               if (text) {
-                controller.enqueue(encoder.encode(text))
+                controller.enqueue(encoder.encode(text)) // Meng-encode text menjadi byte array
               }
             }
           } catch (err) {
-            console.error('Streaming error:', err)
+            console.error('Streaming error:', err) // Error handling
           } finally {
-            controller.close()
+            controller.close() // Menutup stream
           }
         }
       })
       return stream
 
     } else {
-      // Start Chat
+      // Jika ada history, maka akan melanjutkan chat
       const chat = model.startChat({
         history: history.map((h: any) => ({
           role: h.role,

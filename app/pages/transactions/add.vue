@@ -16,7 +16,7 @@
       class="bg-kelola-lime/10 backdrop-blur-md border-2 border-kelola-lime/30 p-4 rounded-2xl flex items-center justify-between shadow-sm group cursor-pointer hover:bg-kelola-lime/20 transition">
       <div>
         <h3 class="font-bold text-kelola-teal text-sm mb-1 uppercase tracking-wider">🌟 Auto Scan Struk</h3>
-        <p class="text-xs text-kelola-teal font-bold uppercase tracking-wide">Foto struk dan biarkan AI kami yang
+        <p class="text-xs text-kelola-teal font-bold uppercase tracking-wide">Foto/upload struk dan biarkan AI kami yang
           mengisinya!</p>
       </div>
       <div
@@ -24,6 +24,10 @@
         📸
       </div>
     </div>
+
+    <!-- Hidden file input for OCR -->
+    <input type="file" ref="fileInput" accept="image/*" class="hidden" @change="onFileSelected" />
+
 
     <form @submit.prevent="submitTransaction"
       class="bg-white/80 backdrop-blur-xl p-6 md:p-8 rounded-[2.5rem] shadow-xl border border-white/40 space-y-6">
@@ -90,9 +94,9 @@
         </div>
       </div>
 
-      <button type="submit" :disabled="loading"
+      <button type="submit" :disabled="loading || isAnalyzing"
         class="w-full mt-4 bg-gradient-to-r from-kelola-lime to-kelola-pale text-kelola-teal py-5 rounded-2xl font-black text-xl uppercase tracking-widest shadow-[0_10px_40px_rgba(214,251,0,0.3)] hover:bg-opacity-90 active:scale-95 transition-all disabled:opacity-50 border-b-4 border-white/20">
-        {{ loading ? 'MENYIMPAN...' : 'SIMPAN' }}
+        {{ loading ? 'MENYIMPAN...' : isAnalyzing ? 'MENGANALISIS STRUK...' : 'SIMPAN' }}
       </button>
     </form>
 
@@ -105,6 +109,8 @@ const { session } = useCustomAuth()
 const router = useRouter()
 const showNotify = ref(false)
 const notifyMsg = ref('')
+const fileInput = ref(null)
+const isAnalyzing = ref(false)
 useSeoMeta({ title: 'Tambah Transaksi - Kelola' })
 
 const { data: categories } = useFetch('/api/categories')
@@ -137,7 +143,51 @@ watch(categories, (cats) => {
 })
 
 const handleOCR = () => {
-  alert('Fitur OCR (Scan Foto Struk) akan mengarahkan ke kamera/gallery dan memanggil /api/ai/ocr!')
+  fileInput.value?.click()
+}
+
+const onFileSelected = async (event) => {
+  const file = event.target.files[0]
+  if (!file) return
+
+  isAnalyzing.value = true
+  notifyMsg.value = 'Sedang membaca struk... Harap tunggu!'
+  showNotify.value = true
+
+  try {
+    const formData = new FormData()
+    formData.append('image', file)
+
+    const data = await $fetch('/api/ai/ocr', {
+      method: 'POST',
+      body: formData
+    })
+
+    if (data) {
+      if (data.type) form.value.type = data.type
+
+      // Delay applying categoryId slightly to ensure watchers have updated availableCategories based on new type
+      setTimeout(() => {
+        if (data.categoryId) form.value.categoryId = data.categoryId
+      }, 50)
+
+      if (data.amount) form.value.amount = data.amount
+      if (data.date) form.value.date = data.date
+      if (data.description) form.value.description = data.description
+      if (data.priority) form.value.priority = data.priority
+
+      notifyMsg.value = 'Struk berhasil dibaca! Silakan periksa kembali.'
+      showNotify.value = true
+      setTimeout(() => showNotify.value = false, 3000)
+    }
+  } catch (e) {
+    notifyMsg.value = e.data?.statusMessage || 'Gagal memproses struk.'
+    showNotify.value = true
+    setTimeout(() => showNotify.value = false, 3000)
+  } finally {
+    isAnalyzing.value = false
+    if (fileInput.value) fileInput.value.value = ''
+  }
 }
 
 const submitTransaction = async () => {

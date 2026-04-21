@@ -42,5 +42,8 @@ export default defineNuxtConfig({
         driver: 'memory'
       }
     }
-  }
+  },
+  future: {
+    compatibilityVersion: 4,
+  },
 })

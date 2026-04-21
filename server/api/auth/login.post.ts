@@ -24,6 +24,10 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: 'Password salah.' })
   }
 
+  if (!user.email_verified_at) {
+    throw createError({ statusCode: 403, message: 'Email belum diverifikasi! Silakan daftar ulang atau cek email Anda untuk OTP.' })
+  }
+
   const token = jwt.sign({ id: user.id }, config.authSecret as string, { expiresIn: '7d' }) // Membuat token
   setCookie(event, 'auth_token', token, { maxAge: 60 * 60 * 24 * 7, path: '/' }) // Set cookie untuk simpan token 
 
