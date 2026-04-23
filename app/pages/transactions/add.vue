@@ -12,7 +12,7 @@
     </div>
 
     <!-- OCR Banner for Premium -->
-    <div v-if="session?.user?.is_premium" @click="handleOCR"
+    <div @click="handleOCR"
       class="bg-kelola-lime/10 backdrop-blur-md border-2 border-kelola-lime/30 p-4 rounded-2xl flex items-center justify-between shadow-sm group cursor-pointer hover:bg-kelola-lime/20 transition">
       <div>
         <h3 class="font-bold text-kelola-teal text-sm mb-1 uppercase tracking-wider">🌟 Auto Scan Struk</h3>
@@ -105,7 +105,6 @@
 </template>
 
 <script setup>
-const { session } = useCustomAuth()
 const router = useRouter()
 const showNotify = ref(false)
 const notifyMsg = ref('')

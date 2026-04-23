@@ -29,3 +29,20 @@ Aplikasi Android dan IOS akan menggunakan `Capacitor.js` yang akan konversi Nuxt
 2. Gemini analisis dan scan struk lalu mereturn data hasil analisis nya sesuai format (field table transactions di db) yang telah ditentukan
 3. Data hasil analisis nya akan langsung diterima di frontend untuk menunggu konfirmasi user di `transactions.vue`
 4. Jika User sudah approve, maka gunakan data hasil analisis tersebut untuk diinsert ke table transactions di database 
+
+## Alur Kerja Simpan Asset (Saham & Kripto)
+### Proses Menyimpan Asset:
+1. User memilih tipe asset (Stock/Crypto), memasukkan simbol, dan jumlah asset pada modal di file `app/pages/portfolios/index.vue`.
+2. Frontend melakukan request POST ke endpoint `server/api/portfolios/index.ts` dengan membawa data asset tersebut.
+3. Server memvalidasi sesi user menggunakan `server/utils/auth.ts` dan menyimpan data asset ke database pada table `portfolio` menggunakan Prisma.
+4. Setelah berhasil disimpan, frontend akan memicu fungsi `refreshPortfolios` untuk memperbarui list asset yang ditampilkan.
+
+## Alur Mendapatkan Harga Live
+### Proses Fetching Harga:
+1. Frontend di `app/pages/portfolios/index.vue` mengidentifikasi daftar simbol asset (saham & kripto) yang dimiliki user maupun daftar default.
+2. Untuk Kripto: Frontend memanggil `server/api/crypto.ts` yang akan mengambil harga terbaru dari API Coingecko (Cached 10 menit).
+3. Untuk Saham: Frontend memanggil `server/api/saham.ts` yang akan mengambil harga penutupan terbaru dari API Saham yang dikonfigurasi (Cached 10 menit).
+4. Hasil harga live tersebut akan dikalkulasi di frontend menggunakan fungsi `getLiveTargetValue` pada file `app/pages/portfolios/index.vue`:
+   - **Kripto**: `Jumlah Koin * Harga IDR`.
+   - **Saham**: `Jumlah Lot * 100 * Harga Close` (karena 1 Lot = 100 lembar).
+5. Nilai estimasi total portofolio ditampilkan secara real-time pada dashboard portofolio user.
