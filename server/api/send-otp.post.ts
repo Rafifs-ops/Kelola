@@ -11,6 +11,11 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: 'Harap isi semua kolom' })
   }
 
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail|yahoo|outlook|hotmail)\.(com|net|id|org)$/
+  if (!emailRegex.test(email)) {
+    throw createError({ statusCode: 400, message: 'Format email tidak valid' })
+  }
+
   const config = useRuntimeConfig()
 
   // Generate 6 digit OTP

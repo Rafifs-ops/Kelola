@@ -12,8 +12,10 @@
       class="max-w-md w-full bg-white/10 backdrop-blur-2xl rounded-[2.5rem] shadow-2xl p-10 relative z-10 border border-white/20">
       <div class="text-center mb-8 flex flex-col items-center">
         <img src="/assets/images/kelola-logo.png" alt="Kelola Logo" class="h-12 w-auto mb-4 drop-shadow-md" />
-        <h1 class="text-4xl font-extrabold text-kelola-lime tracking-tighter mb-1 drop-shadow-sm">{{ isOtpMode ? 'Verifikasi Email.' : 'Daftar Akun.' }}</h1>
-        <p class="text-kelola-lime font-semibold tracking-wide text-sm uppercase">{{ isOtpMode ? 'Masukkan kode OTP yang kami kirim' : 'Mulai kelola uangmu sekarang' }}</p>
+        <h1 class="text-4xl font-extrabold text-kelola-lime tracking-tighter mb-1 drop-shadow-sm">{{ isOtpMode ?
+          'Verifikasi Email.' : 'Daftar Akun.' }}</h1>
+        <p class="text-kelola-lime font-semibold tracking-wide text-sm uppercase">
+          {{ isOtpMode ? 'Masukkan kode OTP yang kami kirim' : 'Mulai kelola uangmu sekarang' }}</p>
       </div>
 
       <form @submit.prevent="handleSubmit" class="space-y-4">
@@ -49,7 +51,9 @@
 
         <template v-else>
           <div>
-            <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 ml-2 text-center">Kode OTP</label>
+            <label
+              class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 ml-2 text-center">Kode
+              OTP</label>
             <input v-model="otpCode" type="text" required placeholder="123456" maxlength="6"
               class="w-full bg-white/80 border-2 border-transparent rounded-2xl py-4 px-5 text-kelola-teal font-black text-center text-2xl tracking-[0.5em] focus:outline-none focus:border-kelola-lime focus:ring-4 focus:ring-kelola-lime/20 transition-all shadow-inner placeholder:font-bold placeholder:text-gray-300 placeholder:tracking-normal" />
           </div>
@@ -62,13 +66,15 @@
           <span v-else>VERIFIKASI OTP</span>
         </button>
       </form>
-      
+
       <p v-if="!isOtpMode" class="mt-6 text-center text-xs text-kelola-lime font-bold uppercase tracking-wide">
         Sudah punya akun?
         <NuxtLink to="/login" class="text-kelola-lime hover:underline font-black transition-colors ml-1">Masuk
         </NuxtLink>
       </p>
-      <p v-else class="mt-6 text-center text-xs text-kelola-lime font-bold uppercase tracking-wide cursor-pointer hover:underline" @click="isOtpMode = false">
+      <p v-else
+        class="mt-6 text-center text-xs text-kelola-lime font-bold uppercase tracking-wide cursor-pointer hover:underline"
+        @click="isOtpMode = false">
         Batal & Kembali
       </p>
     </div>
@@ -98,6 +104,14 @@ const handleRegister = async () => {
   loading.value = true
   errorMsg.value = ''
   successMsg.value = ''
+
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail|yahoo|outlook|hotmail)\.(com|net|id|org)$/
+  if (!emailRegex.test(form.value.email)) {
+    errorMsg.value = 'Format email tidak valid (contoh: nama@email.com)'
+    loading.value = false
+    return
+  }
+
   try {
     const res = await $fetch('/api/send-otp', {
       method: 'POST',

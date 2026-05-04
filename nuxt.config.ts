@@ -1,11 +1,14 @@
+import tailwindcss from "@tailwindcss/vite";
+
 export default defineNuxtConfig({
   devtools: { enabled: true },
+  vite: {
+    plugins: [tailwindcss()]
+  },
   modules: [
-    '@nuxtjs/tailwindcss',
     '@nuxtjs/sitemap'
   ],
   site: {
-    url: 'https://kelola-app-genz.com',
     name: 'Kelola Finance Tracker'
   },
   css: ['~/assets/css/main.css'],

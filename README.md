@@ -2,6 +2,28 @@
 
 Aplikasi Android dan IOS akan menggunakan `Capacitor.js` yang akan konversi Nuxt Js menjadi aplikasi android dan ios
 
+## Fitur Utama Aplikasi Kelola
+Aplikasi Kelola dirancang untuk membantu pengelolaan keuangan pribadi dengan fitur modern dan cerdas:
+
+- **Dashboard Finansial**: Visualisasi ringkasan saldo cash, total nilai aset investasi (saham & kripto), serta grafik distribusi pengeluaran bulanan yang interaktif.
+- **Manajemen Transaksi**: Pencatatan pemasukan dan pengeluaran secara manual dengan sistem kategori yang fleksibel.
+- **AI Receipt Scanner (OCR)**: Fitur premium yang memungkinkan pencatatan transaksi otomatis hanya dengan mengunggah foto struk/nota belanja.
+- **AI Chat Assistant (Kelola AI)**: Konsultan keuangan pribadi berbasis AI yang dapat diajak berdiskusi tentang strategi keuangan, hemat, hingga analisis kemampuan belanja berdasarkan data riwayat transaksi asli pengguna.
+- **AI Daily Insights**: Nasihat keuangan harian yang dipersonalisasi sesuai dengan kebiasaan belanja pengguna.
+- **Portfolio Tracker**: Pelacakan aset investasi (Saham & Crypto) dengan integrasi harga pasar *real-time* (Coingecko & API Saham).
+- **Budgeting & Debt Management**: Pengaturan batas anggaran per kategori dan pelacakan hutang/piutang agar kondisi finansial tetap terkendali.
+- **Multi-Platform Ready**: Dapat diakses melalui browser dan siap dikonversi menjadi aplikasi mobile (Android/iOS) menggunakan Capacitor.js.
+
+## Model AI yang Digunakan
+Fitur kecerdasan buatan dalam aplikasi Kelola ditenagai oleh model Large Language Model (LLM) terbaru dari Google:
+
+- **Model**: `Gemini 2.5 Flash`
+- **Penyedia**: Google Generative AI
+- **Implementasi Fitur AI**:
+    - **OCR & Data Extraction**: Digunakan pada fitur Scan Struk untuk mengekstrak nominal, tanggal, deskripsi, dan kategori dari gambar secara presisi.
+    - **Natural Language Processing (NLP)**: Digunakan pada Kelola AI untuk memahami konteks pertanyaan keuangan pengguna dan memberikan jawaban yang relevan serta empatik.
+    - **Data Analysis**: Digunakan untuk menghasilkan insight harian berdasarkan data transaksi yang tercatat di database.
+
 ## Alur Verifikasi Email
 ### User Meminta OTP:
 1. Frontend mengirim email ke `server/api/send-otp.post.ts`.

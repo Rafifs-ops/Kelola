@@ -64,6 +64,14 @@ const errorMsg = ref('')
 const handleLogin = async () => {
   loading.value = true
   errorMsg.value = ''
+
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail|yahoo|outlook|hotmail)\.(com|net|id|org)$/
+  if (!emailRegex.test(form.value.email)) {
+    errorMsg.value = 'Format email tidak valid (contoh: nama@email.com)'
+    loading.value = false
+    return
+  }
+
   try {
     await $fetch('/api/auth/login', {
       method: 'POST',
